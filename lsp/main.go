@@ -2,21 +2,25 @@ package main
 
 import (
 	"log/slog"
+	"os"
 	"path-intellisense-lsp/handlers"
+	"strings"
 
 	"github.com/tliron/glsp"
 	protocol "github.com/tliron/glsp/protocol_3_16"
 	"github.com/tliron/glsp/server"
 )
 
-const lspName = "Path intellisense language server"
-
 var (
+	lspName        = "Path intellisense lsp"
 	version string = "0.0.1"
 	handler protocol.Handler
 )
 
 func main() {
+	setEnvLogLevel()
+	slog.Debug("Booting lsp")
+
 	handler = protocol.Handler{
 		Initialize:             initialize,
 		Initialized:            initialized,
@@ -26,6 +30,7 @@ func main() {
 	}
 
 	server := server.NewServer(&handler, lspName, true)
+	slog.Debug("Created lsp instance")
 
 	err := server.RunStdio()
 	if err == nil {
@@ -33,12 +38,31 @@ func main() {
 	}
 }
 
+func setEnvLogLevel() {
+	defaultLevel := slog.LevelInfo
+	envLevel := os.Getenv("LOG_LEVEL")
+	levelMap := map[string]slog.Level{
+		"DEBUG": slog.LevelDebug,
+		"INFO":  slog.LevelInfo,
+		"WARN":  slog.LevelWarn,
+		"ERROR": slog.LevelError,
+	}
+	level, ok := levelMap[strings.ToUpper(envLevel)]
+	if !ok {
+		level = defaultLevel
+	}
+	opts := slog.HandlerOptions{
+		Level: level,
+	}
+	handler := slog.NewTextHandler(os.Stdout, &opts)
+	slog.SetDefault(slog.New(handler))
+}
+
 func initialize(context *glsp.Context, params *protocol.InitializeParams) (any, error) {
 	slog.Info("Initializing server...")
 
 	capabilities := handler.CreateServerCapabilities()
-
-	capabilities.CompletionProvider = &protocol.CompletionOptions{}
+	// capabilities.CompletionProvider = &protocol.CompletionOptions{}
 
 	return protocol.InitializeResult{
 		Capabilities: capabilities,

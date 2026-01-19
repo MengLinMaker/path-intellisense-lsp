@@ -15,7 +15,7 @@ func TextDocumentCompletion(ctx *glsp.Context, params *protocol.CompletionParams
 	slog.Info(fmt.Sprintf("File path: %s", params.TextDocument.URI))
 
 	for word, emoji := range mappers.EmojiMapper {
-		emojiCopy := emoji // Create a copy of emoji
+		emojiCopy := emoji
 		completionItems = append(completionItems, protocol.CompletionItem{
 			Label:      word,
 			Detail:     &emojiCopy,

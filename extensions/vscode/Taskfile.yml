@@ -23,6 +23,7 @@ tasks:
       - '*.json'
     cmds:
       - node esbuild.ts
+      - cp ../../lsp/dist/path-intellisense-lsp dist/path-intellisense-lsp
       - pnpm vsce package -o dist/extension.vsix --no-dependencies
 
   default:

@@ -5,6 +5,7 @@
 	"files": [
 		"dist/index.js",
 		"dist/index.js.map",
+		"dist/path-intellisense-lsp",
 		"LICENSE"
 	],
 	"activationEvents": [
