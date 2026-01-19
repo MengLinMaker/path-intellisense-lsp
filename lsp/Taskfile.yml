@@ -3,15 +3,29 @@
 version: '3'
 
 tasks:
-  lint:
-    desc: Lint golang
+  fmt:
     sources:
       - '**/*.go'
+      - 'Taskfile.yml'
+    cmds:
+      - go fmt
+
+  lint:
+    sources:
+      - '**/*.go'
+      - 'Taskfile.yml'
     cmds:
       - golangci-lint run
+
   build:
-    desc: Build golang
     sources:
       - '**/*.go'
+      - 'Taskfile.yml'
     cmds:
-      - go build
+      - go build -o dist/path-intellisense-lsp
+
+  default:
+    deps:
+      - fmt
+      - lint
+      - build
