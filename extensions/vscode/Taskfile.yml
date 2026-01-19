@@ -15,6 +15,7 @@ tasks:
   lint:
     cmds:
       - pnpm biome lint --write
+      - pnpm tsc --noEmit
 
   build:
     sources:
