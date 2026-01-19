@@ -13,7 +13,7 @@ const LSP_BINARY = 'path-intellisense-lsp'
 const LSP_NAME = 'Path intellisense lsp'
 
 export const activate = async (ctx: ExtensionContext) => {
-	const lspModule = ctx.asAbsolutePath(path.join('lsp', 'dist', LSP_BINARY))
+	const lspModule = ctx.asAbsolutePath(path.join('dist', LSP_BINARY))
 	const serverOptions: ServerOptions = {
 		run: { module: lspModule },
 		debug: { module: lspModule },

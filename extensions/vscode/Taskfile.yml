@@ -21,6 +21,7 @@ tasks:
     sources:
       - 'src/**/*.ts'
       - '*.json'
+      - '../../lsp/dist/path-intellisense-lsp'
     cmds:
       - node esbuild.ts
       - cp ../../lsp/dist/path-intellisense-lsp dist/path-intellisense-lsp
