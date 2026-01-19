@@ -4,23 +4,11 @@
  * ------------------------------------------------------------------------------------------ */
 
 import {
-  languages,
   workspace,
   EventEmitter,
   ExtensionContext,
   window,
-  InlayHintsProvider,
-  TextDocument,
-  CancellationToken,
-  Range,
-  InlayHint,
   TextDocumentChangeEvent,
-  ProviderResult,
-  commands,
-  WorkspaceEdit,
-  TextEdit,
-  Selection,
-  Uri,
 } from "vscode";
 
 import {
@@ -32,7 +20,6 @@ import {
 } from "vscode-languageclient/node";
 
 let client: LanguageClient;
-// type a = Parameters<>;
 
 export async function activate(context: ExtensionContext) {
 
