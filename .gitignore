@@ -8,3 +8,4 @@ dist
 # Misc
 *.vsix
 path-intellisense-lsp
+.DS_STORE
