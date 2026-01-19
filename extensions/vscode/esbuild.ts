@@ -1,12 +1,12 @@
-import { build } from "esbuild";
+import { build } from 'esbuild'
 
 build({
-	entryPoints: ["src/extension.ts"],
-	outfile: "dist/index.js",
-	format: "cjs",
-	platform: "node",
+	entryPoints: ['src/extension.ts'],
+	outfile: 'dist/index.js',
+	format: 'cjs',
+	platform: 'node',
 	bundle: true,
 	minify: false,
 	sourcemap: true,
-	external: ["vscode"],
-});
+	external: ['vscode'],
+})

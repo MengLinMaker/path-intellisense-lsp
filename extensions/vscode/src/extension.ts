@@ -1,4 +1,4 @@
-import { workspace, EventEmitter, type ExtensionContext, window } from "vscode";
+import { workspace, EventEmitter, type ExtensionContext, window } from 'vscode'
 
 import {
   type Disposable,
@@ -6,57 +6,57 @@ import {
   LanguageClient,
   type LanguageClientOptions,
   type ServerOptions,
-} from "vscode-languageclient/node";
+} from 'vscode-languageclient/node'
 
-let client: LanguageClient;
+let client: LanguageClient
 
 export async function activate(_ctx: ExtensionContext) {
   const traceOutputChannel = window.createOutputChannel(
-    "Nrs Language Server trace",
-  );
-  const command = process.env.SERVER_PATH || "nrs-language-server";
+    'Nrs Language Server trace',
+  )
+  const command = 'nrs-language-server'
   const run: Executable = {
     command,
     options: {
       env: {
         ...process.env,
-        LOG_LEVEL: "info",
+        LOG_LEVEL: 'info',
       },
     },
-  };
+  }
   const serverOptions: ServerOptions = {
     run,
     debug: run,
-  };
+  }
   // If the extension is launched in debug mode then the debug server options are used
   // Otherwise the run options are used
   // Options to control the language client
   const clientOptions: LanguageClientOptions = {
     // Register the server for plain text documents
-    documentSelector: [{ scheme: "file", language: "nrs" }],
+    documentSelector: [{ scheme: 'file', language: 'nrs' }],
     synchronize: {
       // Notify the server about file changes to '.clientrc files contained in the workspace
-      fileEvents: workspace.createFileSystemWatcher("**/.clientrc"),
+      fileEvents: workspace.createFileSystemWatcher('**/.clientrc'),
     },
     traceOutputChannel,
-  };
+  }
 
   // Create the language client and start the client.
   client = new LanguageClient(
-    "nrs-language-server",
-    "nrs language server",
+    'nrs-language-server',
+    'nrs language server',
     serverOptions,
     clientOptions,
-  );
+  )
   // activateInlayHints(context);
-  client.start();
+  client.start()
 }
 
 export function deactivate(): Thenable<void> | undefined {
   if (!client) {
-    return undefined;
+    return undefined
   }
-  return client.stop();
+  return client.stop()
 }
 
 export function activateInlayHints(ctx: ExtensionContext) {
@@ -65,7 +65,7 @@ export function activateInlayHints(ctx: ExtensionContext) {
     updateHintsEventEmitter: new EventEmitter<void>(),
 
     async onConfigChange() {
-      this.dispose();
+      this.dispose()
 
       // const event = this.updateHintsEventEmitter.event;
       // this.hintsProvider = languages.registerInlayHintsProvider(
@@ -125,22 +125,22 @@ export function activateInlayHints(ctx: ExtensionContext) {
     },
 
     dispose() {
-      this.hintsProvider?.dispose();
-      this.hintsProvider = null;
-      this.updateHintsEventEmitter.dispose();
+      this.hintsProvider?.dispose()
+      this.hintsProvider = null
+      this.updateHintsEventEmitter.dispose()
     },
-  };
+  }
 
   workspace.onDidChangeConfiguration(
     maybeUpdater.onConfigChange,
     maybeUpdater,
     ctx.subscriptions,
-  );
+  )
   workspace.onDidChangeTextDocument(
     maybeUpdater.onDidChangeTextDocument,
     maybeUpdater,
     ctx.subscriptions,
-  );
+  )
 
-  maybeUpdater.onConfigChange().catch(console.error);
+  maybeUpdater.onConfigChange().catch(console.error)
 }
