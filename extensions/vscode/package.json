@@ -2,6 +2,11 @@
 	"name": "path-intellisense-lsp-vscode",
 	"version": "0.0.1",
 	"main": "./dist/index.js",
+	"files": [
+		"dist/index.js",
+		"dist/index.js.map",
+		"LICENSE"
+	],
 	"activationEvents": [
 		"onLanguage"
 	],

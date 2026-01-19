@@ -21,4 +21,12 @@ tasks:
       - 'src/**/*.ts'
       - '*.json'
     cmds:
-      - go build -o dist/path-intellisense-lsp
+      - node esbuild.ts
+      - pnpm vsce package -o dist/extension.vsix --no-dependencies
+
+  default:
+    deps:
+      - fmt
+      - lint
+      - build
+    silent: true
