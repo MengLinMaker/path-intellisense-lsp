@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: '3'
+
+tasks:
+  setup:
+    sources:
+      - '*.json'
+    cmds:
+      - pnpm i
+  fmt:
+    cmds:
+      - pnpm biome format --write
+
+  lint:
+    cmds:
+      - pnpm biome lint --write
+
+  build:
+    sources:
+      - 'src/**/*.ts'
+      - '*.json'
+    cmds:
+      - go build -o dist/path-intellisense-lsp

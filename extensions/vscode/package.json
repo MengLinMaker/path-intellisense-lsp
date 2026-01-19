@@ -16,11 +16,11 @@
 	},
 	"scripts": {
 		"test:type": "tsc --noEmit",
-		"build": "node esbuild.ts",
-		"package": "vsce package -o dist/extension.vsix --no-dependencies"
+		"build": "node esbuild.ts && vsce package -o dist/extension.vsix --no-dependencies"
 	},
 	"devDependencies": {
-		"@types/node": "^17.0.18",
+		"@biomejs/biome": "^2.3.11",
+		"@types/node": "^25.0.9",
 		"@types/vscode": "1.85.0",
 		"@vscode/vsce": "^3.7.1",
 		"esbuild": "^0.27.2",
