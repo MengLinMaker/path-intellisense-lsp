@@ -1,7 +1,7 @@
-import { workspace, EventEmitter, type ExtensionContext, window } from 'vscode'
+import path from 'node:path'
+import { type ExtensionContext, window } from 'vscode'
 
 import {
-	type Disposable,
 	LanguageClient,
 	type LanguageClientOptions,
 	type ServerOptions,
@@ -9,32 +9,22 @@ import {
 
 let client: LanguageClient
 
-export async function activate(_ctx: ExtensionContext) {
-	const traceOutputChannel = window.createOutputChannel(
-		'Path intellisense lsp trace',
-	)
-	const cmd = 'path-intellisense-lsp'
+const LSP_BINARY = 'path-intellisense-lsp'
+const LSP_NAME = 'Path intellisense lsp'
+
+export const activate = async (ctx: ExtensionContext) => {
+	const lspModule = ctx.asAbsolutePath(path.join('lsp', 'dist', LSP_BINARY))
 	const serverOptions: ServerOptions = {
-		run: {
-			command: cmd,
-			options: {
-				env: { LOG_LEVEL: 'info' },
-			},
-		},
-		debug: {
-			command: cmd,
-			options: {
-				env: { LOG_LEVEL: 'debug' },
-			},
-		},
+		run: { module: lspModule },
+		debug: { module: lspModule },
 	}
 	const clientOptions: LanguageClientOptions = {
 		documentSelector: [{ scheme: 'file' }],
-		traceOutputChannel,
+		traceOutputChannel: window.createOutputChannel(`${LSP_NAME} trace`),
 	}
 	client = new LanguageClient(
-		'nrs-language-server',
-		'nrs language server',
+		LSP_BINARY,
+		LSP_NAME,
 		serverOptions,
 		clientOptions,
 	)
@@ -44,88 +34,88 @@ export async function activate(_ctx: ExtensionContext) {
 
 export const deactivate = () => (client ? client.stop() : undefined)
 
-export function activateInlayHints(ctx: ExtensionContext) {
-	const maybeUpdater = {
-		hintsProvider: null as Disposable | null,
-		updateHintsEventEmitter: new EventEmitter<void>(),
+// export function activateInlayHints(ctx: ExtensionContext) {
+//   const maybeUpdater = {
+//     hintsProvider: null as Disposable | null,
+//     updateHintsEventEmitter: new EventEmitter<void>(),
 
-		async onConfigChange() {
-			this.dispose()
+//     async onConfigChange() {
+//       this.dispose()
 
-			// const event = this.updateHintsEventEmitter.event;
-			// this.hintsProvider = languages.registerInlayHintsProvider(
-			//   { scheme: "file", language: "nrs" },
-			//   new (class implements InlayHintsProvider {
-			//     onDidChangeInlayHints = event;
-			//     resolveInlayHint(hint: InlayHint, token: CancellationToken): ProviderResult<InlayHint> {
-			//       const ret = {
-			//         label: hint.label,
-			//         ...hint,
-			//       };
-			//       return ret;
-			//     }
-			//     async provideInlayHints(
-			//       document: TextDocument,
-			//       range: Range,
-			//       token: CancellationToken
-			//     ): Promise<InlayHint[]> {
-			//       const hints = (await client
-			//         .sendRequest("custom/inlay_hint", { path: document.uri.toString() })
-			//         .catch(err => null)) as [number, number, string][];
-			//       if (hints == null) {
-			//         return [];
-			//       } else {
-			//         return hints.map(item => {
-			//           const [start, end, label] = item;
-			//           let startPosition = document.positionAt(start);
-			//           let endPosition = document.positionAt(end);
-			//           return {
-			//             position: endPosition,
-			//             paddingLeft: true,
-			//             label: [
-			//               {
-			//                 value: `${label}`,
-			//                 location: {
-			//                   uri: document.uri,
-			//                   range: new Range(1, 0, 1, 0)
-			//                 }
-			//               command: {
-			//                   title: "hello world",
-			//                   command: "helloworld.helloWorld",
-			//                   arguments: [document.uri],
-			//                 },
-			//               },
-			//             ],
-			//           };
-			//         });
-			//       }
-			//     }
-			//   })()
-			// );
-		},
+//       // const event = this.updateHintsEventEmitter.event;
+//       // this.hintsProvider = languages.registerInlayHintsProvider(
+//       //   { scheme: "file", language: "nrs" },
+//       //   new (class implements InlayHintsProvider {
+//       //     onDidChangeInlayHints = event;
+//       //     resolveInlayHint(hint: InlayHint, token: CancellationToken): ProviderResult<InlayHint> {
+//       //       const ret = {
+//       //         label: hint.label,
+//       //         ...hint,
+//       //       };
+//       //       return ret;
+//       //     }
+//       //     async provideInlayHints(
+//       //       document: TextDocument,
+//       //       range: Range,
+//       //       token: CancellationToken
+//       //     ): Promise<InlayHint[]> {
+//       //       const hints = (await client
+//       //         .sendRequest("custom/inlay_hint", { path: document.uri.toString() })
+//       //         .catch(err => null)) as [number, number, string][];
+//       //       if (hints == null) {
+//       //         return [];
+//       //       } else {
+//       //         return hints.map(item => {
+//       //           const [start, end, label] = item;
+//       //           let startPosition = document.positionAt(start);
+//       //           let endPosition = document.positionAt(end);
+//       //           return {
+//       //             position: endPosition,
+//       //             paddingLeft: true,
+//       //             label: [
+//       //               {
+//       //                 value: `${label}`,
+//       //                 location: {
+//       //                   uri: document.uri,
+//       //                   range: new Range(1, 0, 1, 0)
+//       //                 }
+//       //               command: {
+//       //                   title: "hello world",
+//       //                   command: "helloworld.helloWorld",
+//       //                   arguments: [document.uri],
+//       //                 },
+//       //               },
+//       //             ],
+//       //           };
+//       //         });
+//       //       }
+//       //     }
+//       //   })()
+//       // );
+//     },
 
-		onDidChangeTextDocument() {
-			// debugger
-			// this.updateHintsEventEmitter.fire();
-		},
+//     onDidChangeTextDocument() {
+//       // debugger
+//       // this.updateHintsEventEmitter.fire();
+//     },
 
-		dispose() {
-			this.hintsProvider?.dispose()
-			this.hintsProvider = null
-			this.updateHintsEventEmitter.dispose()
-		},
-	}
+//     dispose() {
+//       this.hintsProvider?.dispose()
+//       this.hintsProvider = null
+//       this.updateHintsEventEmitter.dispose()
+//     },
+//   }
 
-	workspace.onDidChangeConfiguration(
-		maybeUpdater.onConfigChange,
-		maybeUpdater,
-		ctx.subscriptions,
-	)
-	workspace.onDidChangeTextDocument(
-		maybeUpdater.onDidChangeTextDocument,
-		maybeUpdater,
-		ctx.subscriptions,
-	)
+//   workspace.onDidChangeConfiguration(
+//     maybeUpdater.onConfigChange,
+//     maybeUpdater,
+//     ctx.subscriptions,
+//   )
+//   workspace.onDidChangeTextDocument(
+//     maybeUpdater.onDidChangeTextDocument,
+//     maybeUpdater,
+//     ctx.subscriptions,
+//   )
 
-	maybeUpdater.onConfigChange().catch(console.error)
-}
+//   maybeUpdater.onConfigChange().catch(console.error)
+// }
