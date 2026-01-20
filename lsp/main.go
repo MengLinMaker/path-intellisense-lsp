@@ -19,16 +19,23 @@ var (
 )
 
 func main() {
-	setEnvLogLevel()
+	switch strings.ToUpper(os.Getenv("LOG_LEVEL")) {
+	case "DEBUG":
+		slog.SetLogLoggerLevel(slog.LevelDebug)
+	case "WARN":
+		slog.SetLogLoggerLevel(slog.LevelWarn)
+	case "ERROR":
+		slog.SetLogLoggerLevel(slog.LevelError)
+	}
 
 	handler = protocol.Handler{
 		// Lifecycle
 		Initialize:  initialize,
 		Initialized: initialized,
+		SetTrace:    setTrace,
+		LogTrace:    logTrace,
 		Shutdown:    shutdown,
-		// Debugging
-		SetTrace: setTrace,
-		LogTrace: logTrace,
+		Exit:        exit,
 		// Handlers
 		TextDocumentCompletion:          handlers.TextDocumentCompletion,
 		WorkspaceDidChangeConfiguration: handlers.WorkspaceDidChangeConfiguration,
@@ -61,25 +68,6 @@ func initialized(ctx *glsp.Context, params *protocol.InitializedParams) error {
 	return nil
 }
 
-func shutdown(ctx *glsp.Context) error {
-	slog.Warn("Shutdown server")
-	protocol.SetTraceValue(protocol.TraceValueOff)
-	return nil
-}
-
-func setEnvLogLevel() {
-	envLevel := os.Getenv("LOG_LEVEL")
-
-	switch strings.ToUpper(envLevel) {
-	case "DEBUG":
-		slog.SetLogLoggerLevel(slog.LevelDebug)
-	case "WARN":
-		slog.SetLogLoggerLevel(slog.LevelWarn)
-	case "ERROR":
-		slog.SetLogLoggerLevel(slog.LevelError)
-	}
-}
-
 func setTrace(ctx *glsp.Context, params *protocol.SetTraceParams) error {
 	protocol.SetTraceValue(params.Value)
 	return nil
@@ -100,5 +88,16 @@ func logTrace(ctx *glsp.Context, params *protocol.LogTraceParams) error {
 		slog.Debug(string(jsonData))
 	}
 
+	return nil
+}
+
+func shutdown(ctx *glsp.Context) error {
+	slog.Warn("Shutdown server")
+	protocol.SetTraceValue(protocol.TraceValueOff)
+	return nil
+}
+
+func exit(ctx *glsp.Context) error {
+	slog.Warn("Exit server")
 	return nil
 }
