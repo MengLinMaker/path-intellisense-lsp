@@ -5,8 +5,8 @@ import (
 	"log/slog"
 	"path-intellisense-lsp/mappers"
 
-	"github.com/tliron/glsp"
-	protocol "github.com/tliron/glsp/protocol_3_16"
+	"path-intellisense-lsp/glsp"
+	protocol "path-intellisense-lsp/protocol_3_16"
 )
 
 func TextDocumentCompletion(ctx *glsp.Context, params *protocol.CompletionParams) (interface{}, error) {
