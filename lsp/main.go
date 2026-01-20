@@ -23,8 +23,9 @@ func main() {
 
 	handler = protocol.Handler{
 		// Lifecycle
-		Initialize: initialize,
-		Shutdown:   shutdown,
+		Initialize:  initialize,
+		Initialized: initialized,
+		Shutdown:    shutdown,
 		// Debugging
 		SetTrace: setTrace,
 		LogTrace: logTrace,
@@ -52,6 +53,11 @@ func initialize(context *glsp.Context, params *protocol.InitializeParams) (any, 
 			Version: &version,
 		},
 	}, nil
+}
+
+func initialized(context *glsp.Context, params *protocol.InitializedParams) error {
+	slog.Debug("Initialized server")
+	return nil
 }
 
 func shutdown(context *glsp.Context) error {
