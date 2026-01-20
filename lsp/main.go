@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"log/slog"
 	"os"
 	"path-intellisense-lsp/glsp"
@@ -19,8 +18,7 @@ var (
 )
 
 func main() {
-	// setEnvLogLevel()
-	// slog.Info("Booting lsp")
+	setEnvLogLevel()
 
 	handler = protocol.Handler{
 		Initialize:             initialize,
@@ -31,42 +29,30 @@ func main() {
 	}
 
 	server := server.NewServer(&handler)
-	// slog.Info("Created lsp instance")
 
 	err := server.RunStdio()
 	if err == nil {
-		panic("Couldn't run server")
+		slog.Error("Couldn't run server")
 	}
 }
 
 func setEnvLogLevel() {
-	log.SetOutput(os.Stdout)
-	log.SetFlags(0)
-
-	defaultLevel := slog.LevelInfo
 	envLevel := os.Getenv("LOG_LEVEL")
-	levelMap := map[string]slog.Level{
-		"DEBUG": slog.LevelDebug,
-		"INFO":  slog.LevelInfo,
-		"WARN":  slog.LevelWarn,
-		"ERROR": slog.LevelError,
+
+	switch strings.ToUpper(envLevel) {
+	case "DEBUG":
+		slog.SetLogLoggerLevel(slog.LevelDebug)
+	case "WARN":
+		slog.SetLogLoggerLevel(slog.LevelWarn)
+	case "ERROR":
+		slog.SetLogLoggerLevel(slog.LevelError)
 	}
-	level, ok := levelMap[strings.ToUpper(envLevel)]
-	if !ok {
-		level = defaultLevel
-	}
-	opts := slog.HandlerOptions{
-		Level: level,
-	}
-	handler := slog.NewTextHandler(os.Stdout, &opts)
-	slog.SetDefault(slog.New(handler))
 }
 
 func initialize(context *glsp.Context, params *protocol.InitializeParams) (any, error) {
-	// slog.Info("Initializing server...")
+	slog.Debug("Initializing server...")
 
 	capabilities := handler.CreateServerCapabilities()
-	// capabilities.CompletionProvider = &protocol.CompletionOptions{}
 
 	return protocol.InitializeResult{
 		Capabilities: capabilities,
@@ -78,12 +64,12 @@ func initialize(context *glsp.Context, params *protocol.InitializeParams) (any, 
 }
 
 func initialized(context *glsp.Context, params *protocol.InitializedParams) error {
-	// slog.Info("Initialized server")
+	slog.Debug("Initialized server")
 	return nil
 }
 
 func shutdown(context *glsp.Context) error {
-	// slog.Info("Shutdown server")
+	slog.Warn("Shutdown server")
 	protocol.SetTraceValue(protocol.TraceValueOff)
 	return nil
 }

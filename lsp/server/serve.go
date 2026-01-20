@@ -8,7 +8,7 @@ import (
 // See: https://github.com/sourcegraph/go-langserver/blob/master/main.go#L179
 
 func (self *Server) ServeStream(stream io.ReadWriteCloser) {
-	slog.Info("new stream connection")
+	slog.Debug("new stream connection")
 	<-self.newStreamConnection(stream).DisconnectNotify()
-	slog.Info("stream connection closed")
+	slog.Debug("stream connection closed")
 }
