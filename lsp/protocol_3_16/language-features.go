@@ -484,7 +484,7 @@ type CompletionItem struct {
 }
 
 // ([json.Unmarshaler] interface)
-func (self *CompletionItem) UnmarshalJSON(data []byte) error {
+func (s *CompletionItem) UnmarshalJSON(data []byte) error {
 	var value struct {
 		Label               string              `json:"label"`
 		Kind                *CompletionItemKind `json:"kind,omitempty"`
@@ -506,30 +506,30 @@ func (self *CompletionItem) UnmarshalJSON(data []byte) error {
 	}
 
 	if err := json.Unmarshal(data, &value); err == nil {
-		self.Label = value.Label
-		self.Kind = value.Kind
-		self.Tags = value.Tags
-		self.Detail = value.Detail
-		self.Deprecated = value.Deprecated
-		self.Preselect = value.Preselect
-		self.SortText = value.SortText
-		self.FilterText = value.FilterText
-		self.InsertText = value.InsertText
-		self.InsertTextFormat = value.InsertTextFormat
-		self.InsertTextMode = value.InsertTextMode
-		self.AdditionalTextEdits = value.AdditionalTextEdits
-		self.CommitCharacters = value.CommitCharacters
-		self.Command = value.Command
-		self.Data = value.Data
+		s.Label = value.Label
+		s.Kind = value.Kind
+		s.Tags = value.Tags
+		s.Detail = value.Detail
+		s.Deprecated = value.Deprecated
+		s.Preselect = value.Preselect
+		s.SortText = value.SortText
+		s.FilterText = value.FilterText
+		s.InsertText = value.InsertText
+		s.InsertTextFormat = value.InsertTextFormat
+		s.InsertTextMode = value.InsertTextMode
+		s.AdditionalTextEdits = value.AdditionalTextEdits
+		s.CommitCharacters = value.CommitCharacters
+		s.Command = value.Command
+		s.Data = value.Data
 
 		if value.Documentation != nil {
 			var value_ string
 			if err = json.Unmarshal(value.Documentation, &value_); err == nil {
-				self.Documentation = value_
+				s.Documentation = value_
 			} else {
 				var value_ MarkupContent
 				if err = json.Unmarshal(value.Documentation, &value_); err == nil {
-					self.Documentation = value_
+					s.Documentation = value_
 				} else {
 					return err
 				}
@@ -539,11 +539,11 @@ func (self *CompletionItem) UnmarshalJSON(data []byte) error {
 		if value.TextEdit != nil {
 			var value_ TextEdit
 			if err = json.Unmarshal(value.TextEdit, &value_); err == nil {
-				self.TextEdit = value_
+				s.TextEdit = value_
 			} else {
 				var value_ InsertReplaceEdit
 				if err = json.Unmarshal(value.TextEdit, &value_); err == nil {
-					self.TextEdit = value_
+					s.TextEdit = value_
 				} else {
 					return err
 				}
@@ -646,26 +646,26 @@ type Hover struct {
 }
 
 // ([json.Unmarshaler] interface)
-func (self *Hover) UnmarshalJSON(data []byte) error {
+func (s *Hover) UnmarshalJSON(data []byte) error {
 	var value struct {
 		Contents json.RawMessage `json:"contents"` // MarkupContent | MarkedString | []MarkedString
 		Range    *Range          `json:"range,omitempty"`
 	}
 
 	if err := json.Unmarshal(data, &value); err == nil {
-		self.Range = value.Range
+		s.Range = value.Range
 
 		var value_ MarkupContent
 		if err = json.Unmarshal(value.Contents, &value_); err == nil {
-			self.Contents = value_
+			s.Contents = value_
 		} else {
 			var value_ MarkedString
 			if err = json.Unmarshal(value.Contents, &value_); err == nil {
-				self.Contents = value_
+				s.Contents = value_
 			} else {
 				var value_ []MarkedString
 				if err = json.Unmarshal(value.Contents, &value_); err == nil {
-					self.Contents = value_
+					s.Contents = value_
 				} else {
 					return err
 				}
@@ -704,20 +704,20 @@ type MarkedStringStruct struct {
 }
 
 // ([json.Marshaler] interface)
-func (self MarkedString) MarshalJSON() ([]byte, error) {
-	return json.Marshal(self.value)
+func (s MarkedString) MarshalJSON() ([]byte, error) {
+	return json.Marshal(s.value)
 }
 
 // ([json.Unmarshaler] interface)
-func (self MarkedString) UnmarshalJSON(data []byte) error {
+func (s MarkedString) UnmarshalJSON(data []byte) error {
 	var value string
 	if err := json.Unmarshal(data, &value); err == nil {
-		self.value = value
+		s.value = value
 		return nil
 	} else {
 		var value MarkedStringStruct
 		if err := json.Unmarshal(data, &value); err == nil {
-			self.value = value
+			s.value = value
 			return nil
 		} else {
 			return err
@@ -955,7 +955,7 @@ type SignatureInformation struct {
 }
 
 // ([json.Unmarshaler] interface)
-func (self *SignatureInformation) UnmarshalJSON(data []byte) error {
+func (s *SignatureInformation) UnmarshalJSON(data []byte) error {
 	var value struct {
 		Label           string                 `json:"label"`
 		Documentation   json.RawMessage        `json:"documentation"` // nil | string | MarkupContent
@@ -964,18 +964,18 @@ func (self *SignatureInformation) UnmarshalJSON(data []byte) error {
 	}
 
 	if err := json.Unmarshal(data, &value); err == nil {
-		self.Label = value.Label
-		self.Parameters = value.Parameters
-		self.ActiveParameter = value.ActiveParameter
+		s.Label = value.Label
+		s.Parameters = value.Parameters
+		s.ActiveParameter = value.ActiveParameter
 
 		if value.Documentation != nil {
 			var value_ string
 			if err = json.Unmarshal(value.Documentation, &value_); err == nil {
-				self.Documentation = value_
+				s.Documentation = value_
 			} else {
 				var value_ MarkupContent
 				if err = json.Unmarshal(value.Documentation, &value_); err == nil {
-					self.Documentation = value_
+					s.Documentation = value_
 				} else {
 					return err
 				}
@@ -1015,7 +1015,7 @@ type ParameterInformation struct {
 }
 
 // ([json.Unmarshaler] interface)
-func (self *ParameterInformation) UnmarshalJSON(data []byte) error {
+func (s *ParameterInformation) UnmarshalJSON(data []byte) error {
 	var value struct {
 		Label         json.RawMessage `json:"label"`         // string | [2]UInteger
 		Documentation json.RawMessage `json:"documentation"` // nil | string | MarkupContent
@@ -1024,11 +1024,11 @@ func (self *ParameterInformation) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &value); err == nil {
 		var value_ string
 		if err = json.Unmarshal(value.Label, &value_); err == nil {
-			self.Label = value_
+			s.Label = value_
 		} else {
 			var value_ []UInteger
 			if err = json.Unmarshal(value.Label, &value_); err == nil {
-				self.Label = value_
+				s.Label = value_
 			} else {
 				return err
 			}
@@ -1037,11 +1037,11 @@ func (self *ParameterInformation) UnmarshalJSON(data []byte) error {
 		if value.Documentation != nil {
 			var value_ string
 			if err = json.Unmarshal(value.Documentation, &value_); err == nil {
-				self.Documentation = value_
+				s.Documentation = value_
 			} else {
 				var value_ MarkupContent
 				if err = json.Unmarshal(value.Documentation, &value_); err == nil {
-					self.Documentation = value_
+					s.Documentation = value_
 				} else {
 					return err
 				}
@@ -2857,7 +2857,7 @@ type SemanticTokensClientCapabilities struct {
 }
 
 // ([json.Unmarshaler] interface)
-func (self *SemanticTokensClientCapabilities) UnmarshalJSON(data []byte) error {
+func (s *SemanticTokensClientCapabilities) UnmarshalJSON(data []byte) error {
 	var value struct {
 		DynamicRegistration *bool `json:"dynamicRegistration,omitempty"`
 		Requests            struct {
@@ -2872,21 +2872,21 @@ func (self *SemanticTokensClientCapabilities) UnmarshalJSON(data []byte) error {
 	}
 
 	if err := json.Unmarshal(data, &value); err == nil {
-		self.DynamicRegistration = value.DynamicRegistration
-		self.TokenTypes = value.TokenTypes
-		self.TokenModifiers = value.TokenModifiers
-		self.Formats = value.Formats
-		self.OverlappingTokenSupport = value.OverlappingTokenSupport
-		self.MultilineTokenSupport = value.MultilineTokenSupport
+		s.DynamicRegistration = value.DynamicRegistration
+		s.TokenTypes = value.TokenTypes
+		s.TokenModifiers = value.TokenModifiers
+		s.Formats = value.Formats
+		s.OverlappingTokenSupport = value.OverlappingTokenSupport
+		s.MultilineTokenSupport = value.MultilineTokenSupport
 
 		if value.Requests.Range != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.Requests.Range, &value_); err == nil {
-				self.Requests.Range = value_
+				s.Requests.Range = value_
 			} else {
 				var value_ struct{}
 				if err = json.Unmarshal(value.Requests.Range, &value_); err == nil {
-					self.Requests.Range = value_
+					s.Requests.Range = value_
 				} else {
 					return err
 				}
@@ -2896,11 +2896,11 @@ func (self *SemanticTokensClientCapabilities) UnmarshalJSON(data []byte) error {
 		if value.Requests.Full != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.Requests.Full, &value_); err == nil {
-				self.Requests.Full = value_
+				s.Requests.Full = value_
 			} else {
 				var value_ SemanticDelta
 				if err = json.Unmarshal(value.Requests.Full, &value_); err == nil {
-					self.Requests.Full = value_
+					s.Requests.Full = value_
 				} else {
 					return err
 				}
@@ -2934,7 +2934,7 @@ type SemanticTokensOptions struct {
 }
 
 // ([json.Unmarshaler] interface)
-func (self *SemanticTokensOptions) UnmarshalJSON(data []byte) error {
+func (s *SemanticTokensOptions) UnmarshalJSON(data []byte) error {
 	var value struct {
 		Legend SemanticTokensLegend `json:"legend"`
 		Range  json.RawMessage      `json:"range,omitempty"` // nil | bool | struct{}
@@ -2942,16 +2942,16 @@ func (self *SemanticTokensOptions) UnmarshalJSON(data []byte) error {
 	}
 
 	if err := json.Unmarshal(data, &value); err == nil {
-		self.Legend = value.Legend
+		s.Legend = value.Legend
 
 		if value.Range != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.Range, &value_); err == nil {
-				self.Range = value_
+				s.Range = value_
 			} else {
 				var value_ struct{}
 				if err = json.Unmarshal(value.Range, &value_); err == nil {
-					self.Range = value_
+					s.Range = value_
 				} else {
 					return err
 				}
@@ -2961,11 +2961,11 @@ func (self *SemanticTokensOptions) UnmarshalJSON(data []byte) error {
 		if value.Full != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.Full, &value_); err == nil {
-				self.Full = value_
+				s.Full = value_
 			} else {
 				var value_ SemanticDelta
 				if err = json.Unmarshal(value.Full, &value_); err == nil {
-					self.Full = value_
+					s.Full = value_
 				} else {
 					return err
 				}

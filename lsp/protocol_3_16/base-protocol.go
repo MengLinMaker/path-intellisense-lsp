@@ -38,20 +38,20 @@ type IntegerOrString struct {
 }
 
 // ([json.Marshaler] interface)
-func (self *IntegerOrString) MarshalJSON() ([]byte, error) {
-	return json.Marshal(self.Value)
+func (s *IntegerOrString) MarshalJSON() ([]byte, error) {
+	return json.Marshal(s.Value)
 }
 
 // ([json.Unmarshaler] interface)
-func (self *IntegerOrString) UnmarshalJSON(data []byte) error {
+func (s *IntegerOrString) UnmarshalJSON(data []byte) error {
 	var value Integer
 	if err := json.Unmarshal(data, &value); err == nil {
-		self.Value = value
+		s.Value = value
 		return nil
 	} else {
 		var value string
 		if err := json.Unmarshal(data, &value); err == nil {
-			self.Value = value
+			s.Value = value
 			return nil
 		} else {
 			return err
@@ -64,20 +64,20 @@ type BoolOrString struct {
 }
 
 // ([json.Marshaler] interface)
-func (self BoolOrString) MarshalJSON() ([]byte, error) {
-	return json.Marshal(self.Value)
+func (s BoolOrString) MarshalJSON() ([]byte, error) {
+	return json.Marshal(s.Value)
 }
 
 // ([json.Unmarshaler] interface)
-func (self BoolOrString) UnmarshalJSON(data []byte) error {
+func (s BoolOrString) UnmarshalJSON(data []byte) error {
 	var value bool
 	if err := json.Unmarshal(data, &value); err == nil {
-		self.Value = value
+		s.Value = value
 		return nil
 	} else {
 		var value string
 		if err := json.Unmarshal(data, &value); err == nil {
-			self.Value = value
+			s.Value = value
 			return nil
 		} else {
 			return err
@@ -86,11 +86,11 @@ func (self BoolOrString) UnmarshalJSON(data []byte) error {
 }
 
 // ([fmt.Stringer] interface)
-func (self BoolOrString) String() string {
-	if value, ok := self.Value.(bool); ok {
+func (s BoolOrString) String() string {
+	if value, ok := s.Value.(bool); ok {
 		return strconv.FormatBool(value)
 	} else {
-		return self.Value.(string)
+		return s.Value.(string)
 	}
 }
 

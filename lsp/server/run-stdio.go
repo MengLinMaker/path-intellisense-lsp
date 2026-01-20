@@ -6,9 +6,9 @@ import (
 	"os"
 )
 
-func (self *Server) RunStdio() error {
+func (s *Server) RunStdio() error {
 	slog.Info("Reading from stdin, writing to stdout")
-	self.ServeStream(Stdio{})
+	s.ServeStream(Stdio{})
 	return nil
 }
 

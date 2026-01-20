@@ -11,11 +11,11 @@ import (
 
 // See: https://github.com/sourcegraph/go-langserver/blob/master/langserver/handler.go#L206
 
-func (self *Server) newHandler() jsonrpc2.Handler {
-	return jsonrpc2.HandlerWithError(self.handle)
+func (s *Server) newHandler() jsonrpc2.Handler {
+	return jsonrpc2.HandlerWithError(s.handle)
 }
 
-func (self *Server) handle(context contextpkg.Context, connection *jsonrpc2.Conn, request *jsonrpc2.Request) (any, error) {
+func (s *Server) handle(context contextpkg.Context, connection *jsonrpc2.Conn, request *jsonrpc2.Request) (any, error) {
 	glspContext := glsp.Context{
 		Method: request.Method,
 		Notify: func(method string, params any) {
@@ -38,14 +38,17 @@ func (self *Server) handle(context contextpkg.Context, connection *jsonrpc2.Conn
 	switch request.Method {
 	case "exit":
 		// We're giving the attached handler a chance to handle it first, but we'll ignore any result
-		self.Handler.Handle(&glspContext)
-		err := connection.Close()
+		_, _, _, err := s.Handler.Handle(&glspContext)
+		if err == nil {
+			return nil, err
+		}
+		err = connection.Close()
 		return nil, err
 
 	default:
 		// Note: jsonrpc2 will not even call this function if reqest.Params is invalid JSON,
 		// so we don't need to handle jsonrpc2.CodeParseError here
-		result, validMethod, validParams, err := self.Handler.Handle(&glspContext)
+		result, validMethod, validParams, err := s.Handler.Handle(&glspContext)
 		if !validMethod {
 			return nil, &jsonrpc2.Error{
 				Code:    jsonrpc2.CodeMethodNotFound,
