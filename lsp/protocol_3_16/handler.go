@@ -90,8 +90,8 @@ type Handler struct {
 }
 
 // ([glsp.Handler] interface)
-func (self *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validParams bool, err error) {
-	if !self.IsInitialized() && (context.Method != MethodInitialize) {
+func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validParams bool, err error) {
+	if !s.IsInitialized() && (context.Method != MethodInitialize) {
 		return nil, true, true, errors.New("server not initialized")
 	}
 
@@ -99,623 +99,623 @@ func (self *Handler) Handle(context *glsp.Context) (r any, validMethod bool, val
 	// Base Protocol
 
 	case MethodCancelRequest:
-		if self.CancelRequest != nil {
+		if s.CancelRequest != nil {
 			validMethod = true
 			var params CancelParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				err = self.CancelRequest(context, &params)
+				err = s.CancelRequest(context, &params)
 			}
 		}
 
 	case MethodProgress:
-		if self.Progress != nil {
+		if s.Progress != nil {
 			validMethod = true
 			var params ProgressParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				err = self.Progress(context, &params)
+				err = s.Progress(context, &params)
 			}
 		}
 
 	// General Messages
 
 	case MethodInitialize:
-		if self.Initialize != nil {
+		if s.Initialize != nil {
 			validMethod = true
 			var params InitializeParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				if r, err = self.Initialize(context, &params); err == nil {
-					self.SetInitialized(true)
+				if r, err = s.Initialize(context, &params); err == nil {
+					s.SetInitialized(true)
 				}
 			}
 		}
 
 	case MethodInitialized:
-		if self.Initialized != nil {
+		if s.Initialized != nil {
 			validMethod = true
 			var params InitializedParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				err = self.Initialized(context, &params)
+				err = s.Initialized(context, &params)
 			}
 		}
 
 	case MethodShutdown:
-		self.SetInitialized(false)
-		if self.Shutdown != nil {
+		s.SetInitialized(false)
+		if s.Shutdown != nil {
 			validMethod = true
 			validParams = true
-			err = self.Shutdown(context)
+			err = s.Shutdown(context)
 		}
 
 	case MethodExit:
 		// Note that the server will close the connection after we handle it here
-		if self.Exit != nil {
+		if s.Exit != nil {
 			validMethod = true
 			validParams = true
-			err = self.Exit(context)
+			err = s.Exit(context)
 		}
 
 	case MethodLogTrace:
-		if self.LogTrace != nil {
+		if s.LogTrace != nil {
 			validMethod = true
 			var params LogTraceParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				err = self.LogTrace(context, &params)
+				err = s.LogTrace(context, &params)
 			}
 		}
 
 	case MethodSetTrace:
-		if self.SetTrace != nil {
+		if s.SetTrace != nil {
 			validMethod = true
 			var params SetTraceParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				err = self.SetTrace(context, &params)
+				err = s.SetTrace(context, &params)
 			}
 		}
 
 	// Window
 
 	case MethodWindowWorkDoneProgressCancel:
-		if self.WindowWorkDoneProgressCancel != nil {
+		if s.WindowWorkDoneProgressCancel != nil {
 			validMethod = true
 			var params WorkDoneProgressCancelParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				err = self.WindowWorkDoneProgressCancel(context, &params)
+				err = s.WindowWorkDoneProgressCancel(context, &params)
 			}
 		}
 
 	// Workspace
 
 	case MethodWorkspaceDidChangeWorkspaceFolders:
-		if self.WorkspaceDidChangeWorkspaceFolders != nil {
+		if s.WorkspaceDidChangeWorkspaceFolders != nil {
 			validMethod = true
 			var params DidChangeWorkspaceFoldersParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				err = self.WorkspaceDidChangeWorkspaceFolders(context, &params)
+				err = s.WorkspaceDidChangeWorkspaceFolders(context, &params)
 			}
 		}
 
 	case MethodWorkspaceDidChangeConfiguration:
-		if self.WorkspaceDidChangeConfiguration != nil {
+		if s.WorkspaceDidChangeConfiguration != nil {
 			validMethod = true
 			var params DidChangeConfigurationParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				err = self.WorkspaceDidChangeConfiguration(context, &params)
+				err = s.WorkspaceDidChangeConfiguration(context, &params)
 			}
 		}
 
 	case MethodWorkspaceDidChangeWatchedFiles:
-		if self.WorkspaceDidChangeWatchedFiles != nil {
+		if s.WorkspaceDidChangeWatchedFiles != nil {
 			validMethod = true
 			var params DidChangeWatchedFilesParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				err = self.WorkspaceDidChangeWatchedFiles(context, &params)
+				err = s.WorkspaceDidChangeWatchedFiles(context, &params)
 			}
 		}
 
 	case MethodWorkspaceSymbol:
-		if self.WorkspaceSymbol != nil {
+		if s.WorkspaceSymbol != nil {
 			validMethod = true
 			var params WorkspaceSymbolParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.WorkspaceSymbol(context, &params)
+				r, err = s.WorkspaceSymbol(context, &params)
 			}
 		}
 
 	case MethodWorkspaceExecuteCommand:
-		if self.WorkspaceExecuteCommand != nil {
+		if s.WorkspaceExecuteCommand != nil {
 			validMethod = true
 			var params ExecuteCommandParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.WorkspaceExecuteCommand(context, &params)
+				r, err = s.WorkspaceExecuteCommand(context, &params)
 			}
 		}
 
 	case MethodWorkspaceWillCreateFiles:
-		if self.WorkspaceWillCreateFiles != nil {
+		if s.WorkspaceWillCreateFiles != nil {
 			validMethod = true
 			var params CreateFilesParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.WorkspaceWillCreateFiles(context, &params)
+				r, err = s.WorkspaceWillCreateFiles(context, &params)
 			}
 		}
 
 	case MethodWorkspaceDidCreateFiles:
-		if self.WorkspaceDidCreateFiles != nil {
+		if s.WorkspaceDidCreateFiles != nil {
 			validMethod = true
 			var params CreateFilesParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				err = self.WorkspaceDidCreateFiles(context, &params)
+				err = s.WorkspaceDidCreateFiles(context, &params)
 			}
 		}
 
 	case MethodWorkspaceWillRenameFiles:
-		if self.WorkspaceWillRenameFiles != nil {
+		if s.WorkspaceWillRenameFiles != nil {
 			validMethod = true
 			var params RenameFilesParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.WorkspaceWillRenameFiles(context, &params)
+				r, err = s.WorkspaceWillRenameFiles(context, &params)
 			}
 		}
 
 	case MethodWorkspaceDidRenameFiles:
-		if self.WorkspaceDidRenameFiles != nil {
+		if s.WorkspaceDidRenameFiles != nil {
 			validMethod = true
 			var params RenameFilesParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				err = self.WorkspaceDidRenameFiles(context, &params)
+				err = s.WorkspaceDidRenameFiles(context, &params)
 			}
 		}
 
 	case MethodWorkspaceWillDeleteFiles:
-		if self.WorkspaceWillDeleteFiles != nil {
+		if s.WorkspaceWillDeleteFiles != nil {
 			validMethod = true
 			var params DeleteFilesParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.WorkspaceWillDeleteFiles(context, &params)
+				r, err = s.WorkspaceWillDeleteFiles(context, &params)
 			}
 		}
 
 	case MethodWorkspaceDidDeleteFiles:
-		if self.WorkspaceDidDeleteFiles != nil {
+		if s.WorkspaceDidDeleteFiles != nil {
 			validMethod = true
 			var params DeleteFilesParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				err = self.WorkspaceDidDeleteFiles(context, &params)
+				err = s.WorkspaceDidDeleteFiles(context, &params)
 			}
 		}
 
 	// Text Document Synchronization
 
 	case MethodTextDocumentDidOpen:
-		if self.TextDocumentDidOpen != nil {
+		if s.TextDocumentDidOpen != nil {
 			validMethod = true
 			var params DidOpenTextDocumentParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				err = self.TextDocumentDidOpen(context, &params)
+				err = s.TextDocumentDidOpen(context, &params)
 			}
 		}
 
 	case MethodTextDocumentDidChange:
-		if self.TextDocumentDidChange != nil {
+		if s.TextDocumentDidChange != nil {
 			validMethod = true
 			var params DidChangeTextDocumentParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				err = self.TextDocumentDidChange(context, &params)
+				err = s.TextDocumentDidChange(context, &params)
 			}
 		}
 
 	case MethodTextDocumentWillSave:
-		if self.TextDocumentWillSave != nil {
+		if s.TextDocumentWillSave != nil {
 			validMethod = true
 			var params WillSaveTextDocumentParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				err = self.TextDocumentWillSave(context, &params)
+				err = s.TextDocumentWillSave(context, &params)
 			}
 		}
 
 	case MethodTextDocumentWillSaveWaitUntil:
-		if self.TextDocumentWillSaveWaitUntil != nil {
+		if s.TextDocumentWillSaveWaitUntil != nil {
 			validMethod = true
 			var params WillSaveTextDocumentParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentWillSaveWaitUntil(context, &params)
+				r, err = s.TextDocumentWillSaveWaitUntil(context, &params)
 			}
 		}
 
 	case MethodTextDocumentDidSave:
-		if self.TextDocumentDidSave != nil {
+		if s.TextDocumentDidSave != nil {
 			validMethod = true
 			var params DidSaveTextDocumentParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				err = self.TextDocumentDidSave(context, &params)
+				err = s.TextDocumentDidSave(context, &params)
 			}
 		}
 
 	case MethodTextDocumentDidClose:
-		if self.TextDocumentDidClose != nil {
+		if s.TextDocumentDidClose != nil {
 			validMethod = true
 			var params DidCloseTextDocumentParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				err = self.TextDocumentDidClose(context, &params)
+				err = s.TextDocumentDidClose(context, &params)
 			}
 		}
 
 	// Language Features
 
 	case MethodTextDocumentCompletion:
-		if self.TextDocumentCompletion != nil {
+		if s.TextDocumentCompletion != nil {
 			validMethod = true
 			var params CompletionParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentCompletion(context, &params)
+				r, err = s.TextDocumentCompletion(context, &params)
 			}
 		}
 
 	case MethodCompletionItemResolve:
-		if self.CompletionItemResolve != nil {
+		if s.CompletionItemResolve != nil {
 			validMethod = true
 			var params CompletionItem
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.CompletionItemResolve(context, &params)
+				r, err = s.CompletionItemResolve(context, &params)
 			}
 		}
 
 	case MethodTextDocumentHover:
-		if self.TextDocumentHover != nil {
+		if s.TextDocumentHover != nil {
 			validMethod = true
 			var params HoverParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentHover(context, &params)
+				r, err = s.TextDocumentHover(context, &params)
 			}
 		}
 
 	case MethodTextDocumentSignatureHelp:
-		if self.TextDocumentSignatureHelp != nil {
+		if s.TextDocumentSignatureHelp != nil {
 			validMethod = true
 			var params SignatureHelpParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentSignatureHelp(context, &params)
+				r, err = s.TextDocumentSignatureHelp(context, &params)
 			}
 		}
 
 	case MethodTextDocumentDeclaration:
-		if self.TextDocumentDeclaration != nil {
+		if s.TextDocumentDeclaration != nil {
 			validMethod = true
 			var params DeclarationParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentDeclaration(context, &params)
+				r, err = s.TextDocumentDeclaration(context, &params)
 			}
 		}
 
 	case MethodTextDocumentDefinition:
-		if self.TextDocumentDefinition != nil {
+		if s.TextDocumentDefinition != nil {
 			validMethod = true
 			var params DefinitionParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentDefinition(context, &params)
+				r, err = s.TextDocumentDefinition(context, &params)
 			}
 		}
 
 	case MethodTextDocumentTypeDefinition:
-		if self.TextDocumentTypeDefinition != nil {
+		if s.TextDocumentTypeDefinition != nil {
 			validMethod = true
 			var params TypeDefinitionParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentTypeDefinition(context, &params)
+				r, err = s.TextDocumentTypeDefinition(context, &params)
 			}
 		}
 
 	case MethodTextDocumentImplementation:
-		if self.TextDocumentImplementation != nil {
+		if s.TextDocumentImplementation != nil {
 			validMethod = true
 			var params ImplementationParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentImplementation(context, &params)
+				r, err = s.TextDocumentImplementation(context, &params)
 			}
 		}
 
 	case MethodTextDocumentReferences:
-		if self.TextDocumentReferences != nil {
+		if s.TextDocumentReferences != nil {
 			validMethod = true
 			var params ReferenceParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentReferences(context, &params)
+				r, err = s.TextDocumentReferences(context, &params)
 			}
 		}
 
 	case MethodTextDocumentDocumentHighlight:
-		if self.TextDocumentDocumentHighlight != nil {
+		if s.TextDocumentDocumentHighlight != nil {
 			validMethod = true
 			var params DocumentHighlightParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentDocumentHighlight(context, &params)
+				r, err = s.TextDocumentDocumentHighlight(context, &params)
 			}
 		}
 
 	case MethodTextDocumentDocumentSymbol:
-		if self.TextDocumentDocumentSymbol != nil {
+		if s.TextDocumentDocumentSymbol != nil {
 			validMethod = true
 			var params DocumentSymbolParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentDocumentSymbol(context, &params)
+				r, err = s.TextDocumentDocumentSymbol(context, &params)
 			}
 		}
 
 	case MethodTextDocumentCodeAction:
-		if self.TextDocumentCodeAction != nil {
+		if s.TextDocumentCodeAction != nil {
 			validMethod = true
 			var params CodeActionParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentCodeAction(context, &params)
+				r, err = s.TextDocumentCodeAction(context, &params)
 			}
 		}
 
 	case MethodCodeActionResolve:
-		if self.CodeActionResolve != nil {
+		if s.CodeActionResolve != nil {
 			validMethod = true
 			var params CodeAction
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.CodeActionResolve(context, &params)
+				r, err = s.CodeActionResolve(context, &params)
 			}
 		}
 
 	case MethodTextDocumentCodeLens:
-		if self.TextDocumentCodeLens != nil {
+		if s.TextDocumentCodeLens != nil {
 			validMethod = true
 			var params CodeLensParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentCodeLens(context, &params)
+				r, err = s.TextDocumentCodeLens(context, &params)
 			}
 		}
 
 	case MethodCodeLensResolve:
-		if self.TextDocumentDidClose != nil {
+		if s.TextDocumentDidClose != nil {
 			validMethod = true
 			var params CodeLens
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.CodeLensResolve(context, &params)
+				r, err = s.CodeLensResolve(context, &params)
 			}
 		}
 
 	case MethodTextDocumentDocumentLink:
-		if self.TextDocumentDocumentLink != nil {
+		if s.TextDocumentDocumentLink != nil {
 			validMethod = true
 			var params DocumentLinkParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentDocumentLink(context, &params)
+				r, err = s.TextDocumentDocumentLink(context, &params)
 			}
 		}
 
 	case MethodDocumentLinkResolve:
-		if self.DocumentLinkResolve != nil {
+		if s.DocumentLinkResolve != nil {
 			validMethod = true
 			var params DocumentLink
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.DocumentLinkResolve(context, &params)
+				r, err = s.DocumentLinkResolve(context, &params)
 			}
 		}
 
 	case MethodTextDocumentColor:
-		if self.TextDocumentColor != nil {
+		if s.TextDocumentColor != nil {
 			validMethod = true
 			var params DocumentColorParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentColor(context, &params)
+				r, err = s.TextDocumentColor(context, &params)
 			}
 		}
 
 	case MethodTextDocumentColorPresentation:
-		if self.TextDocumentColorPresentation != nil {
+		if s.TextDocumentColorPresentation != nil {
 			validMethod = true
 			var params ColorPresentationParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentColorPresentation(context, &params)
+				r, err = s.TextDocumentColorPresentation(context, &params)
 			}
 		}
 
 	case MethodTextDocumentFormatting:
-		if self.TextDocumentFormatting != nil {
+		if s.TextDocumentFormatting != nil {
 			validMethod = true
 			var params DocumentFormattingParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentFormatting(context, &params)
+				r, err = s.TextDocumentFormatting(context, &params)
 			}
 		}
 
 	case MethodTextDocumentRangeFormatting:
-		if self.TextDocumentRangeFormatting != nil {
+		if s.TextDocumentRangeFormatting != nil {
 			validMethod = true
 			var params DocumentRangeFormattingParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentRangeFormatting(context, &params)
+				r, err = s.TextDocumentRangeFormatting(context, &params)
 			}
 		}
 
 	case MethodTextDocumentOnTypeFormatting:
-		if self.TextDocumentOnTypeFormatting != nil {
+		if s.TextDocumentOnTypeFormatting != nil {
 			validMethod = true
 			var params DocumentOnTypeFormattingParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentOnTypeFormatting(context, &params)
+				r, err = s.TextDocumentOnTypeFormatting(context, &params)
 			}
 		}
 
 	case MethodTextDocumentRename:
-		if self.TextDocumentRename != nil {
+		if s.TextDocumentRename != nil {
 			validMethod = true
 			var params RenameParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentRename(context, &params)
+				r, err = s.TextDocumentRename(context, &params)
 			}
 		}
 
 	case MethodTextDocumentPrepareRename:
-		if self.TextDocumentPrepareRename != nil {
+		if s.TextDocumentPrepareRename != nil {
 			validMethod = true
 			var params PrepareRenameParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentPrepareRename(context, &params)
+				r, err = s.TextDocumentPrepareRename(context, &params)
 			}
 		}
 
 	case MethodTextDocumentFoldingRange:
-		if self.TextDocumentFoldingRange != nil {
+		if s.TextDocumentFoldingRange != nil {
 			validMethod = true
 			var params FoldingRangeParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentFoldingRange(context, &params)
+				r, err = s.TextDocumentFoldingRange(context, &params)
 			}
 		}
 
 	case MethodTextDocumentSelectionRange:
-		if self.TextDocumentSelectionRange != nil {
+		if s.TextDocumentSelectionRange != nil {
 			validMethod = true
 			var params SelectionRangeParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentSelectionRange(context, &params)
+				r, err = s.TextDocumentSelectionRange(context, &params)
 			}
 		}
 
 	case MethodTextDocumentPrepareCallHierarchy:
-		if self.TextDocumentPrepareCallHierarchy != nil {
+		if s.TextDocumentPrepareCallHierarchy != nil {
 			validMethod = true
 			var params CallHierarchyPrepareParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentPrepareCallHierarchy(context, &params)
+				r, err = s.TextDocumentPrepareCallHierarchy(context, &params)
 			}
 		}
 
 	case MethodCallHierarchyIncomingCalls:
-		if self.CallHierarchyIncomingCalls != nil {
+		if s.CallHierarchyIncomingCalls != nil {
 			validMethod = true
 			var params CallHierarchyIncomingCallsParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.CallHierarchyIncomingCalls(context, &params)
+				r, err = s.CallHierarchyIncomingCalls(context, &params)
 			}
 		}
 
 	case MethodCallHierarchyOutgoingCalls:
-		if self.CallHierarchyOutgoingCalls != nil {
+		if s.CallHierarchyOutgoingCalls != nil {
 			validMethod = true
 			var params CallHierarchyOutgoingCallsParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.CallHierarchyOutgoingCalls(context, &params)
+				r, err = s.CallHierarchyOutgoingCalls(context, &params)
 			}
 		}
 
 	case MethodTextDocumentSemanticTokensFull:
-		if self.TextDocumentSemanticTokensFull != nil {
+		if s.TextDocumentSemanticTokensFull != nil {
 			validMethod = true
 			var params SemanticTokensParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentSemanticTokensFull(context, &params)
+				r, err = s.TextDocumentSemanticTokensFull(context, &params)
 			}
 		}
 
 	case MethodTextDocumentSemanticTokensFullDelta:
-		if self.TextDocumentSemanticTokensFullDelta != nil {
+		if s.TextDocumentSemanticTokensFullDelta != nil {
 			validMethod = true
 			var params SemanticTokensDeltaParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentSemanticTokensFullDelta(context, &params)
+				r, err = s.TextDocumentSemanticTokensFullDelta(context, &params)
 			}
 		}
 
 	case MethodTextDocumentSemanticTokensRange:
-		if self.TextDocumentSemanticTokensRange != nil {
+		if s.TextDocumentSemanticTokensRange != nil {
 			validMethod = true
 			var params SemanticTokensRangeParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentSemanticTokensRange(context, &params)
+				r, err = s.TextDocumentSemanticTokensRange(context, &params)
 			}
 		}
 
 	case MethodWorkspaceSemanticTokensRefresh:
-		if self.WorkspaceSemanticTokensRefresh != nil {
+		if s.WorkspaceSemanticTokensRefresh != nil {
 			validMethod = true
 			validParams = true
-			err = self.WorkspaceSemanticTokensRefresh(context)
+			err = s.WorkspaceSemanticTokensRefresh(context)
 		}
 
 	case MethodTextDocumentLinkedEditingRange:
-		if self.TextDocumentLinkedEditingRange != nil {
+		if s.TextDocumentLinkedEditingRange != nil {
 			validMethod = true
 			var params LinkedEditingRangeParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentLinkedEditingRange(context, &params)
+				r, err = s.TextDocumentLinkedEditingRange(context, &params)
 			}
 		}
 
 	case MethodTextDocumentMoniker:
-		if self.TextDocumentMoniker != nil {
+		if s.TextDocumentMoniker != nil {
 			validMethod = true
 			var params MonikerParams
 			if err = json.Unmarshal(context.Params, &params); err == nil {
 				validParams = true
-				r, err = self.TextDocumentMoniker(context, &params)
+				r, err = s.TextDocumentMoniker(context, &params)
 			}
 		}
 
 	default:
-		if self.CustomRequest != nil {
-			if handler, ok := self.CustomRequest[context.Method]; ok && (handler.Func != nil) {
+		if s.CustomRequest != nil {
+			if handler, ok := s.CustomRequest[context.Method]; ok && (handler.Func != nil) {
 				validMethod = true
 				if err = json.Unmarshal(context.Params, &handler.Params); err == nil {
 					validParams = true
@@ -728,29 +728,29 @@ func (self *Handler) Handle(context *glsp.Context) (r any, validMethod bool, val
 	return
 }
 
-func (self *Handler) IsInitialized() bool {
-	self.lock.Lock()
-	defer self.lock.Unlock()
-	return self.initialized
+func (s *Handler) IsInitialized() bool {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+	return s.initialized
 }
 
-func (self *Handler) SetInitialized(initialized bool) {
-	self.lock.Lock()
-	defer self.lock.Unlock()
-	self.initialized = initialized
+func (s *Handler) SetInitialized(initialized bool) {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+	s.initialized = initialized
 }
 
-func (self *Handler) CreateServerCapabilities() ServerCapabilities {
+func (s *Handler) CreateServerCapabilities() ServerCapabilities {
 	var capabilities ServerCapabilities
 
-	if (self.TextDocumentDidOpen != nil) || (self.TextDocumentDidClose != nil) {
+	if (s.TextDocumentDidOpen != nil) || (s.TextDocumentDidClose != nil) {
 		if _, ok := capabilities.TextDocumentSync.(*TextDocumentSyncOptions); !ok {
 			capabilities.TextDocumentSync = &TextDocumentSyncOptions{}
 		}
 		capabilities.TextDocumentSync.(*TextDocumentSyncOptions).OpenClose = &True
 	}
 
-	if self.TextDocumentDidChange != nil {
+	if s.TextDocumentDidChange != nil {
 		if _, ok := capabilities.TextDocumentSync.(*TextDocumentSyncOptions); !ok {
 			capabilities.TextDocumentSync = &TextDocumentSyncOptions{}
 		}
@@ -759,124 +759,124 @@ func (self *Handler) CreateServerCapabilities() ServerCapabilities {
 		capabilities.TextDocumentSync.(*TextDocumentSyncOptions).Change = &value
 	}
 
-	if self.TextDocumentWillSave != nil {
+	if s.TextDocumentWillSave != nil {
 		if _, ok := capabilities.TextDocumentSync.(*TextDocumentSyncOptions); !ok {
 			capabilities.TextDocumentSync = &TextDocumentSyncOptions{}
 		}
 		capabilities.TextDocumentSync.(*TextDocumentSyncOptions).WillSave = &True
 	}
 
-	if self.TextDocumentWillSaveWaitUntil != nil {
+	if s.TextDocumentWillSaveWaitUntil != nil {
 		if _, ok := capabilities.TextDocumentSync.(*TextDocumentSyncOptions); !ok {
 			capabilities.TextDocumentSync = &TextDocumentSyncOptions{}
 		}
 		capabilities.TextDocumentSync.(*TextDocumentSyncOptions).WillSaveWaitUntil = &True
 	}
 
-	if self.TextDocumentDidSave != nil {
+	if s.TextDocumentDidSave != nil {
 		if _, ok := capabilities.TextDocumentSync.(*TextDocumentSyncOptions); !ok {
 			capabilities.TextDocumentSync = &TextDocumentSyncOptions{}
 		}
 		capabilities.TextDocumentSync.(*TextDocumentSyncOptions).Save = &True
 	}
 
-	if self.TextDocumentCompletion != nil {
+	if s.TextDocumentCompletion != nil {
 		capabilities.CompletionProvider = &CompletionOptions{}
 	}
 
-	if self.TextDocumentHover != nil {
+	if s.TextDocumentHover != nil {
 		capabilities.HoverProvider = true
 	}
 
-	if self.TextDocumentSignatureHelp != nil {
+	if s.TextDocumentSignatureHelp != nil {
 		capabilities.SignatureHelpProvider = &SignatureHelpOptions{}
 	}
 
-	if self.TextDocumentDeclaration != nil {
+	if s.TextDocumentDeclaration != nil {
 		capabilities.DeclarationProvider = true
 	}
 
-	if self.TextDocumentDefinition != nil {
+	if s.TextDocumentDefinition != nil {
 		capabilities.DefinitionProvider = true
 	}
 
-	if self.TextDocumentTypeDefinition != nil {
+	if s.TextDocumentTypeDefinition != nil {
 		capabilities.TypeDefinitionProvider = true
 	}
 
-	if self.TextDocumentImplementation != nil {
+	if s.TextDocumentImplementation != nil {
 		capabilities.ImplementationProvider = true
 	}
 
-	if self.TextDocumentReferences != nil {
+	if s.TextDocumentReferences != nil {
 		capabilities.ReferencesProvider = true
 	}
 
-	if self.TextDocumentDocumentHighlight != nil {
+	if s.TextDocumentDocumentHighlight != nil {
 		capabilities.DocumentHighlightProvider = true
 	}
 
-	if self.TextDocumentDocumentSymbol != nil {
+	if s.TextDocumentDocumentSymbol != nil {
 		capabilities.DocumentSymbolProvider = true
 	}
 
-	if self.TextDocumentCodeAction != nil {
+	if s.TextDocumentCodeAction != nil {
 		capabilities.CodeActionProvider = true
 	}
 
-	if self.TextDocumentCodeLens != nil {
+	if s.TextDocumentCodeLens != nil {
 		capabilities.CodeLensProvider = &CodeLensOptions{}
 	}
 
-	if self.TextDocumentDocumentLink != nil {
+	if s.TextDocumentDocumentLink != nil {
 		capabilities.DocumentLinkProvider = &DocumentLinkOptions{}
 	}
 
-	if self.TextDocumentColor != nil {
+	if s.TextDocumentColor != nil {
 		capabilities.ColorProvider = true
 	}
 
-	if self.TextDocumentFormatting != nil {
+	if s.TextDocumentFormatting != nil {
 		capabilities.DocumentFormattingProvider = true
 	}
 
-	if self.TextDocumentRangeFormatting != nil {
+	if s.TextDocumentRangeFormatting != nil {
 		capabilities.DocumentRangeFormattingProvider = true
 	}
 
-	if self.TextDocumentOnTypeFormatting != nil {
+	if s.TextDocumentOnTypeFormatting != nil {
 		capabilities.DocumentOnTypeFormattingProvider = &DocumentOnTypeFormattingOptions{}
 	}
 
-	if self.TextDocumentRename != nil {
+	if s.TextDocumentRename != nil {
 		capabilities.RenameProvider = true
 	}
 
-	if self.TextDocumentFoldingRange != nil {
+	if s.TextDocumentFoldingRange != nil {
 		capabilities.FoldingRangeProvider = true
 	}
 
-	if self.WorkspaceExecuteCommand != nil {
+	if s.WorkspaceExecuteCommand != nil {
 		capabilities.ExecuteCommandProvider = &ExecuteCommandOptions{}
 	}
 
-	if self.TextDocumentSelectionRange != nil {
+	if s.TextDocumentSelectionRange != nil {
 		capabilities.SelectionRangeProvider = true
 	}
 
-	if self.TextDocumentLinkedEditingRange != nil {
+	if s.TextDocumentLinkedEditingRange != nil {
 		capabilities.LinkedEditingRangeProvider = true
 	}
 
-	if self.TextDocumentPrepareCallHierarchy != nil {
+	if s.TextDocumentPrepareCallHierarchy != nil {
 		capabilities.CallHierarchyProvider = true
 	}
 
-	if self.TextDocumentSemanticTokensFull != nil {
+	if s.TextDocumentSemanticTokensFull != nil {
 		if _, ok := capabilities.SemanticTokensProvider.(*SemanticTokensOptions); !ok {
 			capabilities.SemanticTokensProvider = &SemanticTokensOptions{}
 		}
-		if self.TextDocumentSemanticTokensFullDelta != nil {
+		if s.TextDocumentSemanticTokensFullDelta != nil {
 			capabilities.SemanticTokensProvider.(*SemanticTokensOptions).Full = &SemanticDelta{}
 			capabilities.SemanticTokensProvider.(*SemanticTokensOptions).Full.(*SemanticDelta).Delta = &True
 		} else {
@@ -884,24 +884,24 @@ func (self *Handler) CreateServerCapabilities() ServerCapabilities {
 		}
 	}
 
-	if self.TextDocumentSemanticTokensRange != nil {
+	if s.TextDocumentSemanticTokensRange != nil {
 		if _, ok := capabilities.SemanticTokensProvider.(*SemanticTokensOptions); !ok {
 			capabilities.SemanticTokensProvider = &SemanticTokensOptions{}
 		}
 		capabilities.SemanticTokensProvider.(*SemanticTokensOptions).Range = true
 	}
 
-	// TODO: self.TextDocumentSemanticTokensRefresh?
+	// TODO: s.TextDocumentSemanticTokensRefresh?
 
-	if self.TextDocumentMoniker != nil {
+	if s.TextDocumentMoniker != nil {
 		capabilities.MonikerProvider = true
 	}
 
-	if self.WorkspaceSymbol != nil {
+	if s.WorkspaceSymbol != nil {
 		capabilities.WorkspaceSymbolProvider = true
 	}
 
-	if self.WorkspaceDidCreateFiles != nil {
+	if s.WorkspaceDidCreateFiles != nil {
 		if capabilities.Workspace == nil {
 			capabilities.Workspace = &ServerCapabilitiesWorkspace{}
 		}
@@ -913,7 +913,7 @@ func (self *Handler) CreateServerCapabilities() ServerCapabilities {
 		}
 	}
 
-	if self.WorkspaceWillCreateFiles != nil {
+	if s.WorkspaceWillCreateFiles != nil {
 		if capabilities.Workspace == nil {
 			capabilities.Workspace = &ServerCapabilitiesWorkspace{}
 		}
@@ -925,7 +925,7 @@ func (self *Handler) CreateServerCapabilities() ServerCapabilities {
 		}
 	}
 
-	if self.WorkspaceDidRenameFiles != nil {
+	if s.WorkspaceDidRenameFiles != nil {
 		capabilities.RenameProvider = true
 		if capabilities.Workspace == nil {
 			capabilities.Workspace = &ServerCapabilitiesWorkspace{}
@@ -938,7 +938,7 @@ func (self *Handler) CreateServerCapabilities() ServerCapabilities {
 		}
 	}
 
-	if self.WorkspaceWillRenameFiles != nil {
+	if s.WorkspaceWillRenameFiles != nil {
 		capabilities.RenameProvider = true
 		if capabilities.Workspace == nil {
 			capabilities.Workspace = &ServerCapabilitiesWorkspace{}
@@ -951,7 +951,7 @@ func (self *Handler) CreateServerCapabilities() ServerCapabilities {
 		}
 	}
 
-	if self.WorkspaceDidDeleteFiles != nil {
+	if s.WorkspaceDidDeleteFiles != nil {
 		if capabilities.Workspace == nil {
 			capabilities.Workspace = &ServerCapabilitiesWorkspace{}
 		}
@@ -963,7 +963,7 @@ func (self *Handler) CreateServerCapabilities() ServerCapabilities {
 		}
 	}
 
-	if self.WorkspaceWillDeleteFiles != nil {
+	if s.WorkspaceWillDeleteFiles != nil {
 		if capabilities.Workspace == nil {
 			capabilities.Workspace = &ServerCapabilitiesWorkspace{}
 		}
