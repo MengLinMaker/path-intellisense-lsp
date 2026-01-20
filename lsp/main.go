@@ -40,19 +40,6 @@ func main() {
 	}
 }
 
-func setEnvLogLevel() {
-	envLevel := os.Getenv("LOG_LEVEL")
-
-	switch strings.ToUpper(envLevel) {
-	case "DEBUG":
-		slog.SetLogLoggerLevel(slog.LevelDebug)
-	case "WARN":
-		slog.SetLogLoggerLevel(slog.LevelWarn)
-	case "ERROR":
-		slog.SetLogLoggerLevel(slog.LevelError)
-	}
-}
-
 func initialize(context *glsp.Context, params *protocol.InitializeParams) (any, error) {
 	slog.Debug("Initializing server...")
 
@@ -71,6 +58,19 @@ func shutdown(context *glsp.Context) error {
 	slog.Warn("Shutdown server")
 	protocol.SetTraceValue(protocol.TraceValueOff)
 	return nil
+}
+
+func setEnvLogLevel() {
+	envLevel := os.Getenv("LOG_LEVEL")
+
+	switch strings.ToUpper(envLevel) {
+	case "DEBUG":
+		slog.SetLogLoggerLevel(slog.LevelDebug)
+	case "WARN":
+		slog.SetLogLoggerLevel(slog.LevelWarn)
+	case "ERROR":
+		slog.SetLogLoggerLevel(slog.LevelError)
+	}
 }
 
 func setTrace(context *glsp.Context, params *protocol.SetTraceParams) error {
