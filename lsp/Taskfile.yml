@@ -3,6 +3,13 @@
 version: '3'
 
 tasks:
+  setup:
+    sources:
+      - '**/*.go'
+      - 'Taskfile.yml'
+    cmds:
+      - go mod tidy
+
   fmt:
     sources:
       - '**/*.go'
