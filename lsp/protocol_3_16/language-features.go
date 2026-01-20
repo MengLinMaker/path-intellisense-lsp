@@ -704,12 +704,12 @@ type MarkedStringStruct struct {
 }
 
 // ([json.Marshaler] interface)
-func (s MarkedString) MarshalJSON() ([]byte, error) {
+func (s *MarkedString) MarshalJSON() ([]byte, error) {
 	return json.Marshal(s.value)
 }
 
 // ([json.Unmarshaler] interface)
-func (s MarkedString) UnmarshalJSON(data []byte) error {
+func (s *MarkedString) UnmarshalJSON(data []byte) error {
 	var value string
 	if err := json.Unmarshal(data, &value); err == nil {
 		s.value = value

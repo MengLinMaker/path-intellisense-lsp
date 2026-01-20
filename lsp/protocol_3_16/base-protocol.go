@@ -64,12 +64,12 @@ type BoolOrString struct {
 }
 
 // ([json.Marshaler] interface)
-func (s BoolOrString) MarshalJSON() ([]byte, error) {
+func (s *BoolOrString) MarshalJSON() ([]byte, error) {
 	return json.Marshal(s.Value)
 }
 
 // ([json.Unmarshaler] interface)
-func (s BoolOrString) UnmarshalJSON(data []byte) error {
+func (s *BoolOrString) UnmarshalJSON(data []byte) error {
 	var value bool
 	if err := json.Unmarshal(data, &value); err == nil {
 		s.Value = value
