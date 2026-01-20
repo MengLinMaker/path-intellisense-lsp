@@ -55,7 +55,7 @@ type ServerCapabilities struct {
 	DiagnosticProvider any `json:"diagnosticProvider,omitempty"` // nil | DiagnosticOptions | DiagnosticRegistrationOptions
 }
 
-func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
+func (s *ServerCapabilities) UnmarshalJSON(data []byte) error {
 	var value struct {
 		TextDocumentSync                 json.RawMessage                              `json:"textDocumentSync,omitempty"` // nil | TextDocumentSyncOptions | TextDocumentSyncKind
 		CompletionProvider               *protocol316.CompletionOptions               `json:"completionProvider,omitempty"`
@@ -90,22 +90,22 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 	}
 
 	if err := json.Unmarshal(data, &value); err == nil {
-		self.CompletionProvider = value.CompletionProvider
-		self.SignatureHelpProvider = value.SignatureHelpProvider
-		self.CodeLensProvider = value.CodeLensProvider
-		self.DocumentLinkProvider = value.DocumentLinkProvider
-		self.DocumentOnTypeFormattingProvider = value.DocumentOnTypeFormattingProvider
-		self.ExecuteCommandProvider = value.ExecuteCommandProvider
-		self.Workspace = value.Workspace
+		s.CompletionProvider = value.CompletionProvider
+		s.SignatureHelpProvider = value.SignatureHelpProvider
+		s.CodeLensProvider = value.CodeLensProvider
+		s.DocumentLinkProvider = value.DocumentLinkProvider
+		s.DocumentOnTypeFormattingProvider = value.DocumentOnTypeFormattingProvider
+		s.ExecuteCommandProvider = value.ExecuteCommandProvider
+		s.Workspace = value.Workspace
 
 		if value.TextDocumentSync != nil {
 			var value_ protocol316.TextDocumentSyncOptions
 			if err = json.Unmarshal(value.TextDocumentSync, &value_); err == nil {
-				self.TextDocumentSync = value_
+				s.TextDocumentSync = value_
 			} else {
 				var value_ protocol316.TextDocumentSyncKind
 				if err = json.Unmarshal(value.TextDocumentSync, &value_); err == nil {
-					self.TextDocumentSync = value_
+					s.TextDocumentSync = value_
 				} else {
 					return err
 				}
@@ -115,11 +115,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.HoverProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.HoverProvider, &value_); err == nil {
-				self.HoverProvider = value_
+				s.HoverProvider = value_
 			} else {
 				var value_ protocol316.HoverOptions
 				if err = json.Unmarshal(value.HoverProvider, &value_); err == nil {
-					self.HoverProvider = value_
+					s.HoverProvider = value_
 				} else {
 					return err
 				}
@@ -129,15 +129,15 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.DeclarationProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.DeclarationProvider, &value_); err == nil {
-				self.DeclarationProvider = value_
+				s.DeclarationProvider = value_
 			} else {
 				var value_ protocol316.DeclarationOptions
 				if err = json.Unmarshal(value.DeclarationProvider, &value_); err == nil {
-					self.DeclarationProvider = value_
+					s.DeclarationProvider = value_
 				} else {
 					var value_ protocol316.DeclarationRegistrationOptions
 					if err = json.Unmarshal(value.DeclarationProvider, &value_); err == nil {
-						self.DeclarationProvider = value_
+						s.DeclarationProvider = value_
 					} else {
 						return err
 					}
@@ -148,11 +148,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.DefinitionProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.DefinitionProvider, &value_); err == nil {
-				self.DefinitionProvider = value_
+				s.DefinitionProvider = value_
 			} else {
 				var value_ protocol316.DefinitionOptions
 				if err = json.Unmarshal(value.DefinitionProvider, &value_); err == nil {
-					self.DefinitionProvider = value_
+					s.DefinitionProvider = value_
 				} else {
 					return err
 				}
@@ -162,15 +162,15 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.TypeDefinitionProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.TypeDefinitionProvider, &value_); err == nil {
-				self.TypeDefinitionProvider = value_
+				s.TypeDefinitionProvider = value_
 			} else {
 				var value_ protocol316.TypeDefinitionOptions
 				if err = json.Unmarshal(value.TypeDefinitionProvider, &value_); err == nil {
-					self.TypeDefinitionProvider = value_
+					s.TypeDefinitionProvider = value_
 				} else {
 					var value_ protocol316.TypeDefinitionRegistrationOptions
 					if err = json.Unmarshal(value.TypeDefinitionProvider, &value_); err == nil {
-						self.TypeDefinitionProvider = value_
+						s.TypeDefinitionProvider = value_
 					} else {
 						return err
 					}
@@ -181,15 +181,15 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.ImplementationProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.ImplementationProvider, &value_); err == nil {
-				self.ImplementationProvider = value_
+				s.ImplementationProvider = value_
 			} else {
 				var value_ protocol316.ImplementationOptions
 				if err = json.Unmarshal(value.ImplementationProvider, &value_); err == nil {
-					self.ImplementationProvider = value_
+					s.ImplementationProvider = value_
 				} else {
 					var value_ protocol316.ImplementationRegistrationOptions
 					if err = json.Unmarshal(value.ImplementationProvider, &value_); err == nil {
-						self.ImplementationProvider = value_
+						s.ImplementationProvider = value_
 					} else {
 						return err
 					}
@@ -200,11 +200,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.ReferencesProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.ReferencesProvider, &value_); err == nil {
-				self.ReferencesProvider = value_
+				s.ReferencesProvider = value_
 			} else {
 				var value_ protocol316.ReferenceOptions
 				if err = json.Unmarshal(value.ReferencesProvider, &value_); err == nil {
-					self.ReferencesProvider = value_
+					s.ReferencesProvider = value_
 				} else {
 					return err
 				}
@@ -214,11 +214,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.DocumentHighlightProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.DocumentHighlightProvider, &value_); err == nil {
-				self.DocumentHighlightProvider = value_
+				s.DocumentHighlightProvider = value_
 			} else {
 				var value_ protocol316.DocumentHighlightOptions
 				if err = json.Unmarshal(value.DocumentHighlightProvider, &value_); err == nil {
-					self.DocumentHighlightProvider = value_
+					s.DocumentHighlightProvider = value_
 				} else {
 					return err
 				}
@@ -228,11 +228,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.DocumentSymbolProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.DocumentSymbolProvider, &value_); err == nil {
-				self.DocumentSymbolProvider = value_
+				s.DocumentSymbolProvider = value_
 			} else {
 				var value_ protocol316.DocumentSymbolOptions
 				if err = json.Unmarshal(value.DocumentSymbolProvider, &value_); err == nil {
-					self.DocumentSymbolProvider = value_
+					s.DocumentSymbolProvider = value_
 				} else {
 					return err
 				}
@@ -242,11 +242,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.CodeActionProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.CodeActionProvider, &value_); err == nil {
-				self.CodeActionProvider = value_
+				s.CodeActionProvider = value_
 			} else {
 				var value_ protocol316.CodeActionOptions
 				if err = json.Unmarshal(value.CodeActionProvider, &value_); err == nil {
-					self.CodeActionProvider = value_
+					s.CodeActionProvider = value_
 				} else {
 					return err
 				}
@@ -256,15 +256,15 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.ColorProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.ColorProvider, &value_); err == nil {
-				self.ColorProvider = value_
+				s.ColorProvider = value_
 			} else {
 				var value_ protocol316.DocumentColorOptions
 				if err = json.Unmarshal(value.ColorProvider, &value_); err == nil {
-					self.ColorProvider = value_
+					s.ColorProvider = value_
 				} else {
 					var value_ protocol316.DocumentColorRegistrationOptions
 					if err = json.Unmarshal(value.ColorProvider, &value_); err == nil {
-						self.ColorProvider = value_
+						s.ColorProvider = value_
 					} else {
 						return err
 					}
@@ -275,11 +275,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.DocumentFormattingProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.DocumentFormattingProvider, &value_); err == nil {
-				self.DocumentFormattingProvider = value_
+				s.DocumentFormattingProvider = value_
 			} else {
 				var value_ protocol316.DocumentFormattingOptions
 				if err = json.Unmarshal(value.DocumentFormattingProvider, &value_); err == nil {
-					self.DocumentFormattingProvider = value_
+					s.DocumentFormattingProvider = value_
 				} else {
 					return err
 				}
@@ -289,11 +289,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.DocumentRangeFormattingProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.DocumentRangeFormattingProvider, &value_); err == nil {
-				self.DocumentRangeFormattingProvider = value_
+				s.DocumentRangeFormattingProvider = value_
 			} else {
 				var value_ protocol316.DocumentRangeFormattingOptions
 				if err = json.Unmarshal(value.DocumentRangeFormattingProvider, &value_); err == nil {
-					self.DocumentRangeFormattingProvider = value_
+					s.DocumentRangeFormattingProvider = value_
 				} else {
 					return err
 				}
@@ -303,11 +303,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.RenameProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.RenameProvider, &value_); err == nil {
-				self.RenameProvider = value_
+				s.RenameProvider = value_
 			} else {
 				var value_ protocol316.RenameOptions
 				if err = json.Unmarshal(value.RenameProvider, &value_); err == nil {
-					self.RenameProvider = value_
+					s.RenameProvider = value_
 				} else {
 					return err
 				}
@@ -317,15 +317,15 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.FoldingRangeProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.FoldingRangeProvider, &value_); err == nil {
-				self.FoldingRangeProvider = value_
+				s.FoldingRangeProvider = value_
 			} else {
 				var value_ protocol316.FoldingRangeOptions
 				if err = json.Unmarshal(value.FoldingRangeProvider, &value_); err == nil {
-					self.FoldingRangeProvider = value_
+					s.FoldingRangeProvider = value_
 				} else {
 					var value_ protocol316.FoldingRangeRegistrationOptions
 					if err = json.Unmarshal(value.FoldingRangeProvider, &value_); err == nil {
-						self.FoldingRangeProvider = value_
+						s.FoldingRangeProvider = value_
 					} else {
 						return err
 					}
@@ -336,15 +336,15 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.SelectionRangeProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.SelectionRangeProvider, &value_); err == nil {
-				self.SelectionRangeProvider = value_
+				s.SelectionRangeProvider = value_
 			} else {
 				var value_ protocol316.SelectionRangeOptions
 				if err = json.Unmarshal(value.SelectionRangeProvider, &value_); err == nil {
-					self.SelectionRangeProvider = value_
+					s.SelectionRangeProvider = value_
 				} else {
 					var value_ protocol316.SelectionRangeRegistrationOptions
 					if err = json.Unmarshal(value.SelectionRangeProvider, &value_); err == nil {
-						self.SelectionRangeProvider = value_
+						s.SelectionRangeProvider = value_
 					} else {
 						return err
 					}
@@ -355,15 +355,15 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.LinkedEditingRangeProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.LinkedEditingRangeProvider, &value_); err == nil {
-				self.LinkedEditingRangeProvider = value_
+				s.LinkedEditingRangeProvider = value_
 			} else {
 				var value_ protocol316.LinkedEditingRangeOptions
 				if err = json.Unmarshal(value.LinkedEditingRangeProvider, &value_); err == nil {
-					self.LinkedEditingRangeProvider = value_
+					s.LinkedEditingRangeProvider = value_
 				} else {
 					var value_ protocol316.LinkedEditingRangeRegistrationOptions
 					if err = json.Unmarshal(value.LinkedEditingRangeProvider, &value_); err == nil {
-						self.LinkedEditingRangeProvider = value_
+						s.LinkedEditingRangeProvider = value_
 					} else {
 						return err
 					}
@@ -374,15 +374,15 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.CallHierarchyProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.CallHierarchyProvider, &value_); err == nil {
-				self.CallHierarchyProvider = value_
+				s.CallHierarchyProvider = value_
 			} else {
 				var value_ protocol316.CallHierarchyOptions
 				if err = json.Unmarshal(value.CallHierarchyProvider, &value_); err == nil {
-					self.CallHierarchyProvider = value_
+					s.CallHierarchyProvider = value_
 				} else {
 					var value_ protocol316.CallHierarchyRegistrationOptions
 					if err = json.Unmarshal(value.CallHierarchyProvider, &value_); err == nil {
-						self.CallHierarchyProvider = value_
+						s.CallHierarchyProvider = value_
 					} else {
 						return err
 					}
@@ -393,11 +393,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.SemanticTokensProvider != nil {
 			var value_ protocol316.SemanticTokensOptions
 			if err = json.Unmarshal(value.SemanticTokensProvider, &value_); err == nil {
-				self.SemanticTokensProvider = value_
+				s.SemanticTokensProvider = value_
 			} else {
 				var value_ protocol316.SemanticTokensRegistrationOptions
 				if err = json.Unmarshal(value.SemanticTokensProvider, &value_); err == nil {
-					self.SemanticTokensProvider = value_
+					s.SemanticTokensProvider = value_
 				} else {
 					return err
 				}
@@ -407,15 +407,15 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.MonikerProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.MonikerProvider, &value_); err == nil {
-				self.MonikerProvider = value_
+				s.MonikerProvider = value_
 			} else {
 				var value_ protocol316.MonikerOptions
 				if err = json.Unmarshal(value.MonikerProvider, &value_); err == nil {
-					self.MonikerProvider = value_
+					s.MonikerProvider = value_
 				} else {
 					var value_ protocol316.MonikerRegistrationOptions
 					if err = json.Unmarshal(value.MonikerProvider, &value_); err == nil {
-						self.MonikerProvider = value_
+						s.MonikerProvider = value_
 					} else {
 						return err
 					}
@@ -426,11 +426,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.WorkspaceSymbolProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.WorkspaceSymbolProvider, &value_); err == nil {
-				self.WorkspaceSymbolProvider = value_
+				s.WorkspaceSymbolProvider = value_
 			} else {
 				var value_ protocol316.WorkspaceSymbolOptions
 				if err = json.Unmarshal(value.WorkspaceSymbolProvider, &value_); err == nil {
-					self.WorkspaceSymbolProvider = value_
+					s.WorkspaceSymbolProvider = value_
 				} else {
 					return err
 				}
@@ -440,11 +440,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.DiagnosticProvider != nil {
 			var value_ DiagnosticOptions
 			if err = json.Unmarshal(value.DiagnosticProvider, &value_); err == nil {
-				self.DiagnosticProvider = value_
+				s.DiagnosticProvider = value_
 			} else {
 				var value_ DiagnosticRegistrationOptions
 				if err = json.Unmarshal(value.DiagnosticProvider, &value_); err == nil {
-					self.DiagnosticProvider = value_
+					s.DiagnosticProvider = value_
 				} else {
 					return err
 				}
