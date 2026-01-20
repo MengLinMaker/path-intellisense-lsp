@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"fmt"
+	"encoding/json"
 	"log/slog"
 	"path-intellisense-lsp/mappers"
 
@@ -12,7 +12,8 @@ import (
 func TextDocumentCompletion(ctx *glsp.Context, params *protocol.CompletionParams) (interface{}, error) {
 	var completionItems []protocol.CompletionItem
 
-	slog.Info(fmt.Sprintf("File path: %s", params.TextDocument.URI))
+	jsonData, _ := json.MarshalIndent(params, "", "  ")
+	slog.Info(string(jsonData))
 
 	for word, emoji := range mappers.EmojiMapper {
 		emojiCopy := emoji
@@ -21,6 +22,7 @@ func TextDocumentCompletion(ctx *glsp.Context, params *protocol.CompletionParams
 			Detail:     &emojiCopy,
 			InsertText: &emojiCopy,
 		})
+
 	}
 
 	return completionItems, nil

@@ -13,7 +13,7 @@ import (
 const MethodInitialize = protocol316.Method("initialize")
 
 // Returns: InitializeResult | InitializeError
-type InitializeFunc func(context *glsp.Context, params *InitializeParams) (any, error)
+type InitializeFunc func(ctx *glsp.Context, params *InitializeParams) (any, error)
 
 type InitializeParams struct {
 	protocol316.InitializeParams

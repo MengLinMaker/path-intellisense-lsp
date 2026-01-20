@@ -90,21 +90,21 @@ type Handler struct {
 }
 
 // ([glsp.Handler] interface)
-func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validParams bool, err error) {
-	if !s.IsInitialized() && (context.Method != MethodInitialize) {
+func (s *Handler) Handle(ctx *glsp.Context) (r any, validMethod bool, validParams bool, err error) {
+	if !s.IsInitialized() && (ctx.Method != MethodInitialize) {
 		return nil, true, true, errors.New("server not initialized")
 	}
 
-	switch context.Method {
+	switch ctx.Method {
 	// Base Protocol
 
 	case MethodCancelRequest:
 		if s.CancelRequest != nil {
 			validMethod = true
 			var params CancelParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				err = s.CancelRequest(context, &params)
+				err = s.CancelRequest(ctx, &params)
 			}
 		}
 
@@ -112,9 +112,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.Progress != nil {
 			validMethod = true
 			var params ProgressParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				err = s.Progress(context, &params)
+				err = s.Progress(ctx, &params)
 			}
 		}
 
@@ -124,9 +124,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.Initialize != nil {
 			validMethod = true
 			var params InitializeParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				if r, err = s.Initialize(context, &params); err == nil {
+				if r, err = s.Initialize(ctx, &params); err == nil {
 					s.SetInitialized(true)
 				}
 			}
@@ -136,9 +136,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.Initialized != nil {
 			validMethod = true
 			var params InitializedParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				err = s.Initialized(context, &params)
+				err = s.Initialized(ctx, &params)
 			}
 		}
 
@@ -147,7 +147,7 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.Shutdown != nil {
 			validMethod = true
 			validParams = true
-			err = s.Shutdown(context)
+			err = s.Shutdown(ctx)
 		}
 
 	case MethodExit:
@@ -155,16 +155,16 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.Exit != nil {
 			validMethod = true
 			validParams = true
-			err = s.Exit(context)
+			err = s.Exit(ctx)
 		}
 
 	case MethodLogTrace:
 		if s.LogTrace != nil {
 			validMethod = true
 			var params LogTraceParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				err = s.LogTrace(context, &params)
+				err = s.LogTrace(ctx, &params)
 			}
 		}
 
@@ -172,9 +172,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.SetTrace != nil {
 			validMethod = true
 			var params SetTraceParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				err = s.SetTrace(context, &params)
+				err = s.SetTrace(ctx, &params)
 			}
 		}
 
@@ -184,9 +184,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.WindowWorkDoneProgressCancel != nil {
 			validMethod = true
 			var params WorkDoneProgressCancelParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				err = s.WindowWorkDoneProgressCancel(context, &params)
+				err = s.WindowWorkDoneProgressCancel(ctx, &params)
 			}
 		}
 
@@ -196,9 +196,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.WorkspaceDidChangeWorkspaceFolders != nil {
 			validMethod = true
 			var params DidChangeWorkspaceFoldersParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				err = s.WorkspaceDidChangeWorkspaceFolders(context, &params)
+				err = s.WorkspaceDidChangeWorkspaceFolders(ctx, &params)
 			}
 		}
 
@@ -206,9 +206,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.WorkspaceDidChangeConfiguration != nil {
 			validMethod = true
 			var params DidChangeConfigurationParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				err = s.WorkspaceDidChangeConfiguration(context, &params)
+				err = s.WorkspaceDidChangeConfiguration(ctx, &params)
 			}
 		}
 
@@ -216,9 +216,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.WorkspaceDidChangeWatchedFiles != nil {
 			validMethod = true
 			var params DidChangeWatchedFilesParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				err = s.WorkspaceDidChangeWatchedFiles(context, &params)
+				err = s.WorkspaceDidChangeWatchedFiles(ctx, &params)
 			}
 		}
 
@@ -226,9 +226,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.WorkspaceSymbol != nil {
 			validMethod = true
 			var params WorkspaceSymbolParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.WorkspaceSymbol(context, &params)
+				r, err = s.WorkspaceSymbol(ctx, &params)
 			}
 		}
 
@@ -236,9 +236,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.WorkspaceExecuteCommand != nil {
 			validMethod = true
 			var params ExecuteCommandParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.WorkspaceExecuteCommand(context, &params)
+				r, err = s.WorkspaceExecuteCommand(ctx, &params)
 			}
 		}
 
@@ -246,9 +246,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.WorkspaceWillCreateFiles != nil {
 			validMethod = true
 			var params CreateFilesParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.WorkspaceWillCreateFiles(context, &params)
+				r, err = s.WorkspaceWillCreateFiles(ctx, &params)
 			}
 		}
 
@@ -256,9 +256,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.WorkspaceDidCreateFiles != nil {
 			validMethod = true
 			var params CreateFilesParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				err = s.WorkspaceDidCreateFiles(context, &params)
+				err = s.WorkspaceDidCreateFiles(ctx, &params)
 			}
 		}
 
@@ -266,9 +266,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.WorkspaceWillRenameFiles != nil {
 			validMethod = true
 			var params RenameFilesParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.WorkspaceWillRenameFiles(context, &params)
+				r, err = s.WorkspaceWillRenameFiles(ctx, &params)
 			}
 		}
 
@@ -276,9 +276,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.WorkspaceDidRenameFiles != nil {
 			validMethod = true
 			var params RenameFilesParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				err = s.WorkspaceDidRenameFiles(context, &params)
+				err = s.WorkspaceDidRenameFiles(ctx, &params)
 			}
 		}
 
@@ -286,9 +286,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.WorkspaceWillDeleteFiles != nil {
 			validMethod = true
 			var params DeleteFilesParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.WorkspaceWillDeleteFiles(context, &params)
+				r, err = s.WorkspaceWillDeleteFiles(ctx, &params)
 			}
 		}
 
@@ -296,9 +296,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.WorkspaceDidDeleteFiles != nil {
 			validMethod = true
 			var params DeleteFilesParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				err = s.WorkspaceDidDeleteFiles(context, &params)
+				err = s.WorkspaceDidDeleteFiles(ctx, &params)
 			}
 		}
 
@@ -308,9 +308,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentDidOpen != nil {
 			validMethod = true
 			var params DidOpenTextDocumentParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				err = s.TextDocumentDidOpen(context, &params)
+				err = s.TextDocumentDidOpen(ctx, &params)
 			}
 		}
 
@@ -318,9 +318,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentDidChange != nil {
 			validMethod = true
 			var params DidChangeTextDocumentParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				err = s.TextDocumentDidChange(context, &params)
+				err = s.TextDocumentDidChange(ctx, &params)
 			}
 		}
 
@@ -328,9 +328,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentWillSave != nil {
 			validMethod = true
 			var params WillSaveTextDocumentParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				err = s.TextDocumentWillSave(context, &params)
+				err = s.TextDocumentWillSave(ctx, &params)
 			}
 		}
 
@@ -338,9 +338,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentWillSaveWaitUntil != nil {
 			validMethod = true
 			var params WillSaveTextDocumentParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentWillSaveWaitUntil(context, &params)
+				r, err = s.TextDocumentWillSaveWaitUntil(ctx, &params)
 			}
 		}
 
@@ -348,9 +348,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentDidSave != nil {
 			validMethod = true
 			var params DidSaveTextDocumentParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				err = s.TextDocumentDidSave(context, &params)
+				err = s.TextDocumentDidSave(ctx, &params)
 			}
 		}
 
@@ -358,9 +358,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentDidClose != nil {
 			validMethod = true
 			var params DidCloseTextDocumentParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				err = s.TextDocumentDidClose(context, &params)
+				err = s.TextDocumentDidClose(ctx, &params)
 			}
 		}
 
@@ -370,9 +370,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentCompletion != nil {
 			validMethod = true
 			var params CompletionParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentCompletion(context, &params)
+				r, err = s.TextDocumentCompletion(ctx, &params)
 			}
 		}
 
@@ -380,9 +380,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.CompletionItemResolve != nil {
 			validMethod = true
 			var params CompletionItem
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.CompletionItemResolve(context, &params)
+				r, err = s.CompletionItemResolve(ctx, &params)
 			}
 		}
 
@@ -390,9 +390,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentHover != nil {
 			validMethod = true
 			var params HoverParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentHover(context, &params)
+				r, err = s.TextDocumentHover(ctx, &params)
 			}
 		}
 
@@ -400,9 +400,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentSignatureHelp != nil {
 			validMethod = true
 			var params SignatureHelpParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentSignatureHelp(context, &params)
+				r, err = s.TextDocumentSignatureHelp(ctx, &params)
 			}
 		}
 
@@ -410,9 +410,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentDeclaration != nil {
 			validMethod = true
 			var params DeclarationParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentDeclaration(context, &params)
+				r, err = s.TextDocumentDeclaration(ctx, &params)
 			}
 		}
 
@@ -420,9 +420,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentDefinition != nil {
 			validMethod = true
 			var params DefinitionParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentDefinition(context, &params)
+				r, err = s.TextDocumentDefinition(ctx, &params)
 			}
 		}
 
@@ -430,9 +430,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentTypeDefinition != nil {
 			validMethod = true
 			var params TypeDefinitionParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentTypeDefinition(context, &params)
+				r, err = s.TextDocumentTypeDefinition(ctx, &params)
 			}
 		}
 
@@ -440,9 +440,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentImplementation != nil {
 			validMethod = true
 			var params ImplementationParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentImplementation(context, &params)
+				r, err = s.TextDocumentImplementation(ctx, &params)
 			}
 		}
 
@@ -450,9 +450,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentReferences != nil {
 			validMethod = true
 			var params ReferenceParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentReferences(context, &params)
+				r, err = s.TextDocumentReferences(ctx, &params)
 			}
 		}
 
@@ -460,9 +460,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentDocumentHighlight != nil {
 			validMethod = true
 			var params DocumentHighlightParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentDocumentHighlight(context, &params)
+				r, err = s.TextDocumentDocumentHighlight(ctx, &params)
 			}
 		}
 
@@ -470,9 +470,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentDocumentSymbol != nil {
 			validMethod = true
 			var params DocumentSymbolParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentDocumentSymbol(context, &params)
+				r, err = s.TextDocumentDocumentSymbol(ctx, &params)
 			}
 		}
 
@@ -480,9 +480,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentCodeAction != nil {
 			validMethod = true
 			var params CodeActionParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentCodeAction(context, &params)
+				r, err = s.TextDocumentCodeAction(ctx, &params)
 			}
 		}
 
@@ -490,9 +490,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.CodeActionResolve != nil {
 			validMethod = true
 			var params CodeAction
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.CodeActionResolve(context, &params)
+				r, err = s.CodeActionResolve(ctx, &params)
 			}
 		}
 
@@ -500,9 +500,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentCodeLens != nil {
 			validMethod = true
 			var params CodeLensParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentCodeLens(context, &params)
+				r, err = s.TextDocumentCodeLens(ctx, &params)
 			}
 		}
 
@@ -510,9 +510,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentDidClose != nil {
 			validMethod = true
 			var params CodeLens
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.CodeLensResolve(context, &params)
+				r, err = s.CodeLensResolve(ctx, &params)
 			}
 		}
 
@@ -520,9 +520,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentDocumentLink != nil {
 			validMethod = true
 			var params DocumentLinkParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentDocumentLink(context, &params)
+				r, err = s.TextDocumentDocumentLink(ctx, &params)
 			}
 		}
 
@@ -530,9 +530,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.DocumentLinkResolve != nil {
 			validMethod = true
 			var params DocumentLink
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.DocumentLinkResolve(context, &params)
+				r, err = s.DocumentLinkResolve(ctx, &params)
 			}
 		}
 
@@ -540,9 +540,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentColor != nil {
 			validMethod = true
 			var params DocumentColorParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentColor(context, &params)
+				r, err = s.TextDocumentColor(ctx, &params)
 			}
 		}
 
@@ -550,9 +550,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentColorPresentation != nil {
 			validMethod = true
 			var params ColorPresentationParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentColorPresentation(context, &params)
+				r, err = s.TextDocumentColorPresentation(ctx, &params)
 			}
 		}
 
@@ -560,9 +560,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentFormatting != nil {
 			validMethod = true
 			var params DocumentFormattingParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentFormatting(context, &params)
+				r, err = s.TextDocumentFormatting(ctx, &params)
 			}
 		}
 
@@ -570,9 +570,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentRangeFormatting != nil {
 			validMethod = true
 			var params DocumentRangeFormattingParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentRangeFormatting(context, &params)
+				r, err = s.TextDocumentRangeFormatting(ctx, &params)
 			}
 		}
 
@@ -580,9 +580,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentOnTypeFormatting != nil {
 			validMethod = true
 			var params DocumentOnTypeFormattingParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentOnTypeFormatting(context, &params)
+				r, err = s.TextDocumentOnTypeFormatting(ctx, &params)
 			}
 		}
 
@@ -590,9 +590,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentRename != nil {
 			validMethod = true
 			var params RenameParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentRename(context, &params)
+				r, err = s.TextDocumentRename(ctx, &params)
 			}
 		}
 
@@ -600,9 +600,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentPrepareRename != nil {
 			validMethod = true
 			var params PrepareRenameParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentPrepareRename(context, &params)
+				r, err = s.TextDocumentPrepareRename(ctx, &params)
 			}
 		}
 
@@ -610,9 +610,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentFoldingRange != nil {
 			validMethod = true
 			var params FoldingRangeParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentFoldingRange(context, &params)
+				r, err = s.TextDocumentFoldingRange(ctx, &params)
 			}
 		}
 
@@ -620,9 +620,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentSelectionRange != nil {
 			validMethod = true
 			var params SelectionRangeParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentSelectionRange(context, &params)
+				r, err = s.TextDocumentSelectionRange(ctx, &params)
 			}
 		}
 
@@ -630,9 +630,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentPrepareCallHierarchy != nil {
 			validMethod = true
 			var params CallHierarchyPrepareParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentPrepareCallHierarchy(context, &params)
+				r, err = s.TextDocumentPrepareCallHierarchy(ctx, &params)
 			}
 		}
 
@@ -640,9 +640,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.CallHierarchyIncomingCalls != nil {
 			validMethod = true
 			var params CallHierarchyIncomingCallsParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.CallHierarchyIncomingCalls(context, &params)
+				r, err = s.CallHierarchyIncomingCalls(ctx, &params)
 			}
 		}
 
@@ -650,9 +650,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.CallHierarchyOutgoingCalls != nil {
 			validMethod = true
 			var params CallHierarchyOutgoingCallsParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.CallHierarchyOutgoingCalls(context, &params)
+				r, err = s.CallHierarchyOutgoingCalls(ctx, &params)
 			}
 		}
 
@@ -660,9 +660,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentSemanticTokensFull != nil {
 			validMethod = true
 			var params SemanticTokensParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentSemanticTokensFull(context, &params)
+				r, err = s.TextDocumentSemanticTokensFull(ctx, &params)
 			}
 		}
 
@@ -670,9 +670,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentSemanticTokensFullDelta != nil {
 			validMethod = true
 			var params SemanticTokensDeltaParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentSemanticTokensFullDelta(context, &params)
+				r, err = s.TextDocumentSemanticTokensFullDelta(ctx, &params)
 			}
 		}
 
@@ -680,9 +680,9 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentSemanticTokensRange != nil {
 			validMethod = true
 			var params SemanticTokensRangeParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentSemanticTokensRange(context, &params)
+				r, err = s.TextDocumentSemanticTokensRange(ctx, &params)
 			}
 		}
 
@@ -690,16 +690,16 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.WorkspaceSemanticTokensRefresh != nil {
 			validMethod = true
 			validParams = true
-			err = s.WorkspaceSemanticTokensRefresh(context)
+			err = s.WorkspaceSemanticTokensRefresh(ctx)
 		}
 
 	case MethodTextDocumentLinkedEditingRange:
 		if s.TextDocumentLinkedEditingRange != nil {
 			validMethod = true
 			var params LinkedEditingRangeParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentLinkedEditingRange(context, &params)
+				r, err = s.TextDocumentLinkedEditingRange(ctx, &params)
 			}
 		}
 
@@ -707,19 +707,19 @@ func (s *Handler) Handle(context *glsp.Context) (r any, validMethod bool, validP
 		if s.TextDocumentMoniker != nil {
 			validMethod = true
 			var params MonikerParams
-			if err = json.Unmarshal(context.Params, &params); err == nil {
+			if err = json.Unmarshal(ctx.Params, &params); err == nil {
 				validParams = true
-				r, err = s.TextDocumentMoniker(context, &params)
+				r, err = s.TextDocumentMoniker(ctx, &params)
 			}
 		}
 
 	default:
 		if s.CustomRequest != nil {
-			if handler, ok := s.CustomRequest[context.Method]; ok && (handler.Func != nil) {
+			if handler, ok := s.CustomRequest[ctx.Method]; ok && (handler.Func != nil) {
 				validMethod = true
-				if err = json.Unmarshal(context.Params, &handler.Params); err == nil {
+				if err = json.Unmarshal(ctx.Params, &handler.Params); err == nil {
 					validParams = true
-					r, err = handler.Func(context, handler.Params)
+					r, err = handler.Func(ctx, handler.Params)
 				}
 			}
 		}

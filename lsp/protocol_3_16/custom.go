@@ -14,4 +14,4 @@ type CustomRequestHandler struct {
 
 type CustomRequestHandlers map[string]CustomRequestHandler
 
-type CustomRequestFunc func(context *glsp.Context, params json.RawMessage) (any, error)
+type CustomRequestFunc func(ctx *glsp.Context, params json.RawMessage) (any, error)

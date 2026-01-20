@@ -1,7 +1,7 @@
 package glsp
 
 import (
-	contextpkg "context"
+	"context"
 	"encoding/json"
 )
 
@@ -13,9 +13,9 @@ type Context struct {
 	Params  json.RawMessage
 	Notify  NotifyFunc
 	Call    CallFunc
-	Context contextpkg.Context // can be nil
+	Context context.Context // can be nil
 }
 
 type Handler interface {
-	Handle(context *Context) (result any, validMethod bool, validParams bool, err error)
+	Handle(ctx *Context) (result any, validMethod bool, validParams bool, err error)
 }

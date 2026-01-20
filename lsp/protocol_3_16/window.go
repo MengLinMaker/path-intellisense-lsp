@@ -179,7 +179,7 @@ type WorkDoneProgressCreateParams struct {
 
 const MethodWindowWorkDoneProgressCancel = Method("window/workDoneProgress/cancel")
 
-type WindowWorkDoneProgressCancelFunc func(context *glsp.Context, params *WorkDoneProgressCancelParams) error
+type WindowWorkDoneProgressCancelFunc func(ctx *glsp.Context, params *WorkDoneProgressCancelParams) error
 
 type WorkDoneProgressCancelParams struct {
 	/**

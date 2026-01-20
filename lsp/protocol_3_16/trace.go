@@ -58,9 +58,9 @@ func HasTraceMessageType(type_ MessageType) bool {
 	}
 }
 
-func Trace(context *glsp.Context, type_ MessageType, message string) error {
+func Trace(ctx *glsp.Context, type_ MessageType, message string) error {
 	if HasTraceMessageType(type_) {
-		go context.Notify(ServerWindowLogMessage, &LogMessageParams{
+		go ctx.Notify(ServerWindowLogMessage, &LogMessageParams{
 			Type:    type_,
 			Message: message,
 		})

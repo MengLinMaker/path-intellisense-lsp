@@ -98,7 +98,7 @@ func (s BoolOrString) String() string {
 
 const MethodCancelRequest = Method("$/cancelRequest")
 
-type CancelRequestFunc func(context *glsp.Context, params *CancelParams) error
+type CancelRequestFunc func(ctx *glsp.Context, params *CancelParams) error
 
 type CancelParams struct {
 	/**
@@ -111,7 +111,7 @@ type CancelParams struct {
 
 const MethodProgress = Method("$/progress")
 
-type ProgressFunc func(context *glsp.Context, params *ProgressParams) error
+type ProgressFunc func(ctx *glsp.Context, params *ProgressParams) error
 
 type ProgressParams struct {
 	/**

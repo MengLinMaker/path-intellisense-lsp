@@ -66,7 +66,7 @@ type DiagnosticRegistrationOptions struct {
 
 const MethodTextDocumentDiagnostic = protocol316.Method("textDocument/diagnostic")
 
-type TextDocumentDiagnosticFunc func(context *glsp.Context, params *DocumentDiagnosticParams) (any, error)
+type TextDocumentDiagnosticFunc func(ctx *glsp.Context, params *DocumentDiagnosticParams) (any, error)
 
 /**
  * Parameters of the document diagnostic request.

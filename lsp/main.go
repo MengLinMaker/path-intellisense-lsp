@@ -30,7 +30,8 @@ func main() {
 		SetTrace: setTrace,
 		LogTrace: logTrace,
 		// Handlers
-		TextDocumentCompletion: handlers.TextDocumentCompletion,
+		TextDocumentCompletion:          handlers.TextDocumentCompletion,
+		WorkspaceDidChangeConfiguration: handlers.WorkspaceDidChangeConfiguration,
 	}
 
 	server := server.NewServer(&handler)
@@ -41,7 +42,7 @@ func main() {
 	}
 }
 
-func initialize(context *glsp.Context, params *protocol.InitializeParams) (any, error) {
+func initialize(ctx *glsp.Context, params *protocol.InitializeParams) (any, error) {
 	slog.Debug("Initializing server...")
 
 	capabilities := handler.CreateServerCapabilities()
@@ -55,12 +56,12 @@ func initialize(context *glsp.Context, params *protocol.InitializeParams) (any, 
 	}, nil
 }
 
-func initialized(context *glsp.Context, params *protocol.InitializedParams) error {
+func initialized(ctx *glsp.Context, params *protocol.InitializedParams) error {
 	slog.Debug("Initialized server")
 	return nil
 }
 
-func shutdown(context *glsp.Context) error {
+func shutdown(ctx *glsp.Context) error {
 	slog.Warn("Shutdown server")
 	protocol.SetTraceValue(protocol.TraceValueOff)
 	return nil
@@ -79,12 +80,12 @@ func setEnvLogLevel() {
 	}
 }
 
-func setTrace(context *glsp.Context, params *protocol.SetTraceParams) error {
+func setTrace(ctx *glsp.Context, params *protocol.SetTraceParams) error {
 	protocol.SetTraceValue(params.Value)
 	return nil
 }
 
-func logTrace(context *glsp.Context, params *protocol.LogTraceParams) error {
+func logTrace(ctx *glsp.Context, params *protocol.LogTraceParams) error {
 	traceValue := protocol.GetTraceValue()
 
 	switch traceValue {

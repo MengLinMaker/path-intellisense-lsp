@@ -11,7 +11,7 @@ import (
 const MethodInitialize = Method("initialize")
 
 // Returns: InitializeResult | InitializeError
-type InitializeFunc func(context *glsp.Context, params *InitializeParams) (any, error)
+type InitializeFunc func(ctx *glsp.Context, params *InitializeParams) (any, error)
 
 type InitializeParams struct {
 	WorkDoneProgressParams
@@ -1110,7 +1110,7 @@ func (s *ServerCapabilities) UnmarshalJSON(data []byte) error {
 
 const MethodInitialized = Method("initialized")
 
-type InitializedFunc func(context *glsp.Context, params *InitializedParams) error
+type InitializedFunc func(ctx *glsp.Context, params *InitializedParams) error
 
 type InitializedParams struct{}
 
@@ -1118,19 +1118,19 @@ type InitializedParams struct{}
 
 const MethodShutdown = Method("shutdown")
 
-type ShutdownFunc func(context *glsp.Context) error
+type ShutdownFunc func(ctx *glsp.Context) error
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#exit
 
 const MethodExit = Method("exit")
 
-type ExitFunc func(context *glsp.Context) error
+type ExitFunc func(ctx *glsp.Context) error
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#logTrace
 
 const MethodLogTrace = Method("$/logTrace")
 
-type LogTraceFunc func(context *glsp.Context, params *LogTraceParams) error
+type LogTraceFunc func(ctx *glsp.Context, params *LogTraceParams) error
 
 type LogTraceParams struct {
 	/**
@@ -1149,7 +1149,7 @@ type LogTraceParams struct {
 
 const MethodSetTrace = Method("$/setTrace")
 
-type SetTraceFunc func(context *glsp.Context, params *SetTraceParams) error
+type SetTraceFunc func(ctx *glsp.Context, params *SetTraceParams) error
 
 type SetTraceParams struct {
 	/**

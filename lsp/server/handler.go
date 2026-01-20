@@ -1,7 +1,7 @@
 package server
 
 import (
-	contextpkg "context"
+	"context"
 	"fmt"
 	"log/slog"
 	"path-intellisense-lsp/glsp"
@@ -15,20 +15,20 @@ func (s *Server) newHandler() jsonrpc2.Handler {
 	return jsonrpc2.HandlerWithError(s.handle)
 }
 
-func (s *Server) handle(context contextpkg.Context, connection *jsonrpc2.Conn, request *jsonrpc2.Request) (any, error) {
+func (s *Server) handle(ctx context.Context, connection *jsonrpc2.Conn, request *jsonrpc2.Request) (any, error) {
 	glspContext := glsp.Context{
 		Method: request.Method,
 		Notify: func(method string, params any) {
-			if err := connection.Notify(context, method, params); err != nil {
+			if err := connection.Notify(ctx, method, params); err != nil {
 				slog.Error(err.Error())
 			}
 		},
 		Call: func(method string, params any, result any) {
-			if err := connection.Call(context, method, params, result); err != nil {
+			if err := connection.Call(ctx, method, params, result); err != nil {
 				slog.Error(err.Error())
 			}
 		},
-		Context: context,
+		Context: ctx,
 	}
 
 	if request.Params != nil {

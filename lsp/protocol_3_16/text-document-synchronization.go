@@ -38,7 +38,7 @@ const (
 
 const MethodTextDocumentDidOpen = Method("textDocument/didOpen")
 
-type TextDocumentDidOpenFunc func(context *glsp.Context, params *DidOpenTextDocumentParams) error
+type TextDocumentDidOpenFunc func(ctx *glsp.Context, params *DidOpenTextDocumentParams) error
 
 type DidOpenTextDocumentParams struct {
 	/**
@@ -64,7 +64,7 @@ type TextDocumentChangeRegistrationOptions struct {
 
 const MethodTextDocumentDidChange = Method("textDocument/didChange")
 
-type TextDocumentDidChangeFunc func(context *glsp.Context, params *DidChangeTextDocumentParams) error
+type TextDocumentDidChangeFunc func(ctx *glsp.Context, params *DidChangeTextDocumentParams) error
 
 type DidChangeTextDocumentParams struct {
 	/**
@@ -158,7 +158,7 @@ type TextDocumentContentChangeEventWhole struct {
 
 const MethodTextDocumentWillSave = Method("textDocument/willSave")
 
-type TextDocumentWillSaveFunc func(context *glsp.Context, params *WillSaveTextDocumentParams) error
+type TextDocumentWillSaveFunc func(ctx *glsp.Context, params *WillSaveTextDocumentParams) error
 
 /**
  * The parameters send in a will save text document notification.
@@ -202,7 +202,7 @@ const (
 
 const MethodTextDocumentWillSaveWaitUntil = Method("textDocument/willSaveWaitUntil")
 
-type TextDocumentWillSaveWaitUntilFunc func(context *glsp.Context, params *WillSaveTextDocumentParams) ([]TextEdit, error)
+type TextDocumentWillSaveWaitUntilFunc func(ctx *glsp.Context, params *WillSaveTextDocumentParams) ([]TextEdit, error)
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#textDocument_didSave
 
@@ -224,7 +224,7 @@ type TextDocumentSaveRegistrationOptions struct {
 
 const MethodTextDocumentDidSave = Method("textDocument/didSave")
 
-type TextDocumentDidSaveFunc func(context *glsp.Context, params *DidSaveTextDocumentParams) error
+type TextDocumentDidSaveFunc func(ctx *glsp.Context, params *DidSaveTextDocumentParams) error
 
 type DidSaveTextDocumentParams struct {
 	/**
@@ -337,7 +337,7 @@ func (s *TextDocumentSyncOptions) UnmarshalJSON(data []byte) error {
 
 const MethodTextDocumentDidClose = Method("textDocument/didClose")
 
-type TextDocumentDidCloseFunc func(context *glsp.Context, params *DidCloseTextDocumentParams) error
+type TextDocumentDidCloseFunc func(ctx *glsp.Context, params *DidCloseTextDocumentParams) error
 
 type DidCloseTextDocumentParams struct {
 	/**
