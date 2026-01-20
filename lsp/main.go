@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"log/slog"
 	"os"
 	"path-intellisense-lsp/glsp"
@@ -21,10 +22,13 @@ func main() {
 	setEnvLogLevel()
 
 	handler = protocol.Handler{
-		Initialize:             initialize,
-		Initialized:            initialized,
-		Shutdown:               shutdown,
-		SetTrace:               setTrace,
+		// Lifecycle
+		Initialize: initialize,
+		Shutdown:   shutdown,
+		// Debugging
+		SetTrace: setTrace,
+		LogTrace: logTrace,
+		// Handlers
 		TextDocumentCompletion: handlers.TextDocumentCompletion,
 	}
 
@@ -63,11 +67,6 @@ func initialize(context *glsp.Context, params *protocol.InitializeParams) (any, 
 	}, nil
 }
 
-func initialized(context *glsp.Context, params *protocol.InitializedParams) error {
-	slog.Debug("Initialized server")
-	return nil
-}
-
 func shutdown(context *glsp.Context) error {
 	slog.Warn("Shutdown server")
 	protocol.SetTraceValue(protocol.TraceValueOff)
@@ -76,5 +75,23 @@ func shutdown(context *glsp.Context) error {
 
 func setTrace(context *glsp.Context, params *protocol.SetTraceParams) error {
 	protocol.SetTraceValue(params.Value)
+	return nil
+}
+
+func logTrace(context *glsp.Context, params *protocol.LogTraceParams) error {
+	traceValue := protocol.GetTraceValue()
+
+	switch traceValue {
+	case protocol.TraceValueMessage:
+		slog.Info(params.Message)
+
+	case protocol.TraceValueVerbose:
+		jsonData, err := json.MarshalIndent(params, "", "  ")
+		if err != nil {
+			return err
+		}
+		slog.Debug(string(jsonData))
+	}
+
 	return nil
 }
