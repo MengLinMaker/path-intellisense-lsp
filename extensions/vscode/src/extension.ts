@@ -3,6 +3,7 @@ import { type ExtensionContext, window } from 'vscode'
 
 import {
 	LanguageClient,
+	TransportKind,
 	type LanguageClientOptions,
 	type ServerOptions,
 } from 'vscode-languageclient/node'
@@ -13,10 +14,10 @@ const LSP_BINARY = 'path-intellisense-lsp'
 const LSP_NAME = 'Path intellisense lsp'
 
 export const activate = async (ctx: ExtensionContext) => {
-	const lspModule = ctx.asAbsolutePath(path.join('dist', LSP_BINARY))
+	const lspBinaryPath = ctx.asAbsolutePath(path.join('dist', LSP_BINARY))
 	const serverOptions: ServerOptions = {
-		run: { module: lspModule },
-		debug: { module: lspModule },
+		run: { command: lspBinaryPath, transport: TransportKind.stdio },
+		debug: { command: lspBinaryPath, transport: TransportKind.stdio },
 	}
 	const clientOptions: LanguageClientOptions = {
 		documentSelector: [{ scheme: 'file' }],
