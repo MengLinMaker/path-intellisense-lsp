@@ -37,8 +37,10 @@ func main() {
 		Shutdown:    shutdown,
 		Exit:        exit,
 		// Handlers
-		TextDocumentCompletion:          handlers.TextDocumentCompletion,
-		WorkspaceDidChangeConfiguration: handlers.WorkspaceDidChangeConfiguration,
+		TextDocumentDidOpen:    handlers.TextDocumentDidOpen,
+		TextDocumentDidClose:   handlers.TextDocumentDidClose,
+		TextDocumentDidChange:  handlers.TextDocumentDidChange,
+		TextDocumentCompletion: handlers.TextDocumentCompletion,
 	}
 
 	server := server.NewServer(&handler)
