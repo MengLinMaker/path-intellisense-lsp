@@ -54,15 +54,22 @@ func main() {
 func initialize(ctx *glsp.Context, params *protocol.InitializeParams) (any, error) {
 	slog.Debug("Initializing server...")
 
-	capabilities := handler.CreateServerCapabilities()
-
-	return protocol.InitializeResult{
+	options := protocol.ServerCapabilitiesOptions{
+		CompletionOptions: &protocol.CompletionOptions{
+			TriggerCharacters: []string{
+				"/",
+			},
+		},
+	}
+	capabilities := handler.CreateServerCapabilities(&options)
+	initializeResult := protocol.InitializeResult{
 		Capabilities: capabilities,
 		ServerInfo: &protocol.InitializeResultServerInfo{
 			Name:    lspName,
 			Version: &version,
 		},
-	}, nil
+	}
+	return initializeResult, nil
 }
 
 func initialized(ctx *glsp.Context, params *protocol.InitializedParams) error {

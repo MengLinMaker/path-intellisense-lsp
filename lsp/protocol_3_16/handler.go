@@ -740,7 +740,11 @@ func (s *Handler) SetInitialized(initialized bool) {
 	s.initialized = initialized
 }
 
-func (s *Handler) CreateServerCapabilities() ServerCapabilities {
+type ServerCapabilitiesOptions struct {
+	CompletionOptions *CompletionOptions
+}
+
+func (s *Handler) CreateServerCapabilities(opt *ServerCapabilitiesOptions) ServerCapabilities {
 	var capabilities ServerCapabilities
 
 	if (s.TextDocumentDidOpen != nil) || (s.TextDocumentDidClose != nil) {
@@ -781,7 +785,11 @@ func (s *Handler) CreateServerCapabilities() ServerCapabilities {
 	}
 
 	if s.TextDocumentCompletion != nil {
-		capabilities.CompletionProvider = &CompletionOptions{}
+		if opt.CompletionOptions != nil {
+			capabilities.CompletionProvider = opt.CompletionOptions
+		} else {
+			capabilities.CompletionProvider = &CompletionOptions{}
+		}
 	}
 
 	if s.TextDocumentHover != nil {
