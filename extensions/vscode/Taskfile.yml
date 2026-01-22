@@ -1,0 +1,35 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: '3'
+
+tasks:
+  setup:
+    sources:
+      - '*.json'
+    cmds:
+      - pnpm i
+  fmt:
+    cmds:
+      - pnpm biome format --write
+
+  lint:
+    cmds:
+      - pnpm biome lint --write
+      - pnpm tsc --noEmit
+
+  build:
+    sources:
+      - 'src/**/*.ts'
+      - '*.json'
+      - '../../lsp/dist/path-intellisense-lsp'
+    cmds:
+      - node esbuild.ts
+      - cp ../../lsp/dist/path-intellisense-lsp dist/path-intellisense-lsp
+      - pnpm vsce package -o dist/extension.vsix --no-dependencies
+
+  default:
+    deps:
+      - fmt
+      - lint
+      - build
+    silent: true

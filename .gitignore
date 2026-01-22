@@ -1,7 +1,11 @@
-/target
+# Taskfile
+.task
+
+# Node
 node_modules
-out/
-.pnpm-debug.log
-*.ast 
-dist/
+dist
+
+# Misc
 *.vsix
+path-intellisense-lsp
+.DS_STORE

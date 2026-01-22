@@ -1,0 +1,16 @@
+{
+    "$schema": "https://biomejs.dev/schemas/2.2.3/schema.json",
+    "javascript": {
+        "formatter": {
+            "semicolons": "asNeeded",
+            "quoteStyle": "single"
+        }
+    },
+    "files": {
+        "includes": [
+            "**/*.ts",
+            "**/*.json",
+            "!dist"
+        ]
+    }
+}
