@@ -14,7 +14,7 @@ import (
 	protocol "path-intellisense-lsp/protocol_3_16"
 )
 
-func TextDocumentCompletion(ctx *glsp.Context, params *protocol.CompletionParams) (interface{}, error) {
+func TextDocumentCompletion(ctx *glsp.Context, params *protocol.CompletionParams) (any, error) {
 	slog.Debug(fmt.Sprintf("TextDocumentCompletion: %s", params.TextDocument.URI))
 
 	var completionItems []protocol.CompletionItem
@@ -40,28 +40,47 @@ func TextDocumentCompletion(ctx *glsp.Context, params *protocol.CompletionParams
 	if err != nil {
 		return completionItems, err
 	}
-
 	for _, suggestedAbsolutePath := range suggestedAbsolutePaths {
 		_, suggestion := filepath.Split(suggestedAbsolutePath)
 
-		detail := ""
-		label := ""
+		doc := fmt.Sprintf(`
+**Relative path:**
+
+[*%s*](file://%s)
+
+**Absolute path:**
+
+[*%s*](file://%s)`,
+			path+suggestion, suggestedAbsolutePath, suggestedAbsolutePath, suggestedAbsolutePath)
 
 		fileInfo, err := os.Stat(suggestedAbsolutePath)
 		if err == nil && fileInfo.IsDir() {
-			detail = "📂 Folder"
-			label = "📂 " + suggestion
+			detail := "📂 Folder"
+			kind := protocol.CompletionItemKindFolder
+			completionItems = append(completionItems, protocol.CompletionItem{
+				Label:  suggestion,
+				Kind:   &kind,
+				Detail: &detail,
+				Documentation: protocol.MarkupContent{
+					Kind:  protocol.MarkupKindMarkdown,
+					Value: "**📂 Folder**\n" + doc,
+				},
+				InsertText: &suggestion,
+			})
 		} else {
-			detail = "📄 File"
-			label = "📄 " + suggestion
+			detail := "📄 File"
+			kind := protocol.CompletionItemKindFile
+			completionItems = append(completionItems, protocol.CompletionItem{
+				Label:  suggestion,
+				Kind:   &kind,
+				Detail: &detail,
+				Documentation: protocol.MarkupContent{
+					Kind:  protocol.MarkupKindMarkdown,
+					Value: "**📄 File**\n" + doc,
+				},
+				InsertText: &suggestion,
+			})
 		}
-		detail += "\n" + path + suggestion
-
-		completionItems = append(completionItems, protocol.CompletionItem{
-			Label:      label,
-			Detail:     &detail,
-			InsertText: &suggestion,
-		})
 	}
 	return completionItems, nil
 }
