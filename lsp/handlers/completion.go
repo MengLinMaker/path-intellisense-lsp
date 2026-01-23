@@ -26,7 +26,7 @@ func TextDocumentCompletion(ctx *glsp.Context, params *protocol.CompletionParams
 	}
 
 	// Proceed if input is relative file path
-	rePathSyntax := regexp.MustCompile(`[.]+(\/[^\\/:*?"<>|\r\n]+)*\/`)
+	rePathSyntax := regexp.MustCompile(`[.]+(\/([*]|[^\\/:?"<>|\r\n])+)*\/`)
 	matches := rePathSyntax.FindAllString(line[:params.Position.Character], -1)
 	if len(matches) == 0 {
 		return completionItems, nil
