@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: '3'
+
+tasks:
+  lint:
+    cmds:
+      - cargo c
+
+  default:
+    deps:
+      - lint
+    silent: true
