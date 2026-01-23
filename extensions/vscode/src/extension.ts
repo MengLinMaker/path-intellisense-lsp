@@ -19,6 +19,7 @@ export const activate = async (ctx: ExtensionContext) => {
 	let lspBinaryPath = `./lsp/dist/${LSP_BINARY}`
 	if (!existsSync(lspBinaryPath))
 		lspBinaryPath = ctx.asAbsolutePath(path.join('dist', LSP_BINARY))
+	lspBinaryPath = `./lsp/dist/${LSP_BINARY}`
 
 	const serverOptions: ServerOptions = {
 		run: {
