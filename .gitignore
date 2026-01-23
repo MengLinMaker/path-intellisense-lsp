@@ -5,6 +5,10 @@
 node_modules
 dist
 
+# Rust
+*.wasm
+target
+
 # Misc
 *.vsix
 path-intellisense-lsp
