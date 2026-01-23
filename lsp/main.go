@@ -36,10 +36,11 @@ func main() {
 		LogTrace:    logTrace,
 		Shutdown:    shutdown,
 		Exit:        exit,
-		// Handlers
-		TextDocumentDidOpen:    handlers.TextDocumentDidOpen,
-		TextDocumentDidClose:   handlers.TextDocumentDidClose,
-		TextDocumentDidChange:  handlers.TextDocumentDidChange,
+		// Handlers for file syncing
+		TextDocumentDidOpen:   handlers.TextDocumentDidOpen,
+		TextDocumentDidClose:  handlers.TextDocumentDidClose,
+		TextDocumentDidChange: handlers.TextDocumentDidChange,
+		// Handlers for code completion
 		TextDocumentCompletion: handlers.TextDocumentCompletion,
 	}
 
