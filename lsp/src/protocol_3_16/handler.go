@@ -5,7 +5,7 @@ import (
 	"errors"
 	"sync"
 
-	"path-intellisense-lsp/glsp"
+	"path-intellisense-lsp/src/glsp"
 )
 
 type Handler struct {

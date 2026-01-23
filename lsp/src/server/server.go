@@ -3,7 +3,7 @@ package server
 import (
 	"time"
 
-	"path-intellisense-lsp/glsp"
+	"path-intellisense-lsp/src/glsp"
 )
 
 var DefaultTimeout = time.Minute

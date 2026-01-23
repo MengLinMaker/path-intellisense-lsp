@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"log/slog"
 	"os"
-	"path-intellisense-lsp/glsp"
-	"path-intellisense-lsp/handlers"
-	"path-intellisense-lsp/server"
+	"path-intellisense-lsp/src/glsp"
+	"path-intellisense-lsp/src/handlers"
+	"path-intellisense-lsp/src/server"
 	"strings"
 
-	protocol "path-intellisense-lsp/protocol_3_16"
+	protocol "path-intellisense-lsp/src/protocol_3_16"
 )
 
 var (

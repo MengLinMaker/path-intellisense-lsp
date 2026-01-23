@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
-	"path-intellisense-lsp/glsp"
+	"path-intellisense-lsp/src/glsp"
 
 	"github.com/sourcegraph/jsonrpc2"
 )

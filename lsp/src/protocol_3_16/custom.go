@@ -3,7 +3,7 @@ package protocol
 import (
 	"encoding/json"
 
-	"path-intellisense-lsp/glsp"
+	"path-intellisense-lsp/src/glsp"
 )
 
 type CustomRequestHandler struct {

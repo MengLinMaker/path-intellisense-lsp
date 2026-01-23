@@ -3,9 +3,9 @@ package protocol
 import (
 	"encoding/json"
 
-	"path-intellisense-lsp/glsp"
+	"path-intellisense-lsp/src/glsp"
 
-	protocol316 "path-intellisense-lsp/protocol_3_16"
+	protocol316 "path-intellisense-lsp/src/protocol_3_16"
 )
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#initialize

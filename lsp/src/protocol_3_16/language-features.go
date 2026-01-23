@@ -3,7 +3,7 @@ package protocol
 import (
 	"encoding/json"
 
-	"path-intellisense-lsp/glsp"
+	"path-intellisense-lsp/src/glsp"
 )
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#textDocument_completion

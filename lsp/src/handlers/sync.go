@@ -4,8 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"log/slog"
-	"path-intellisense-lsp/glsp"
-	protocol "path-intellisense-lsp/protocol_3_16"
+	"path-intellisense-lsp/src/glsp"
+	protocol "path-intellisense-lsp/src/protocol_3_16"
 	"strings"
 )
 

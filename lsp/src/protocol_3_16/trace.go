@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"path-intellisense-lsp/glsp"
+	"path-intellisense-lsp/src/glsp"
 )
 
 var traceValue TraceValue = TraceValueOff

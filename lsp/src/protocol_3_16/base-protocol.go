@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"strconv"
 
-	"path-intellisense-lsp/glsp"
+	"path-intellisense-lsp/src/glsp"
 )
 
 var True bool = true

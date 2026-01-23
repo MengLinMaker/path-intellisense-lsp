@@ -1,6 +1,6 @@
 package protocol
 
-import "path-intellisense-lsp/glsp"
+import "path-intellisense-lsp/src/glsp"
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#workspace_workspaceFolders
 

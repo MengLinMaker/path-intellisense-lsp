@@ -10,8 +10,8 @@ import (
 	"regexp"
 	"strings"
 
-	"path-intellisense-lsp/glsp"
-	protocol "path-intellisense-lsp/protocol_3_16"
+	"path-intellisense-lsp/src/glsp"
+	protocol "path-intellisense-lsp/src/protocol_3_16"
 )
 
 func TextDocumentCompletion(ctx *glsp.Context, params *protocol.CompletionParams) (any, error) {

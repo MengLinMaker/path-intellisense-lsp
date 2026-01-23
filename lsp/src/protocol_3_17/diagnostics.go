@@ -1,8 +1,8 @@
 package protocol
 
 import (
-	"path-intellisense-lsp/glsp"
-	protocol316 "path-intellisense-lsp/protocol_3_16"
+	"path-intellisense-lsp/src/glsp"
+	protocol316 "path-intellisense-lsp/src/protocol_3_16"
 )
 
 /**
