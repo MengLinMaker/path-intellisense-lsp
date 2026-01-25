@@ -22,8 +22,8 @@
     "fmt": {
       "cache": true,
       "inputs": [
-        "{projectRoot}/src",
-        "{projectRoot}/test",
+        "{projectRoot}/src/*",
+        "{projectRoot}/test/*",
         "{workspaceRoot}/biome.json"
       ],
       "configurations": {
@@ -35,8 +35,8 @@
     "lint": {
       "cache": true,
       "inputs": [
-        "{projectRoot}/src",
-        "{projectRoot}/test",
+        "{projectRoot}/src/*",
+        "{projectRoot}/test/*",
         "{workspaceRoot}/biome.json"
       ],
       "configurations": {
@@ -48,8 +48,8 @@
     "test:type": {
       "cache": true,
       "inputs": [
-        "{projectRoot}/src",
-        "{projectRoot}/test"
+        "{projectRoot}/src/*",
+        "{projectRoot}/test/*"
       ],
       "configurations": {
         "watch": {
@@ -60,8 +60,8 @@
     "test:unit": {
       "cache": true,
       "inputs": [
-        "{projectRoot}/src",
-        "{projectRoot}/test"
+        "{projectRoot}/src/*",
+        "{projectRoot}/test/*"
       ],
       "configurations": {
         "watch": {
@@ -72,7 +72,7 @@
     "build": {
       "cache": true,
       "outputs": [
-        "{projectRoot}/out"
+        "{projectRoot}/out/*"
       ],
       "configurations": {
         "watch": {
