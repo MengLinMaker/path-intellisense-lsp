@@ -1,28 +1,34 @@
 package handlers
 
 import (
-	"bufio"
 	"fmt"
 	"log/slog"
 	"path-intellisense-lsp/src/glsp"
 	protocol "path-intellisense-lsp/src/protocol_3_16"
-	"strings"
+	"regexp"
 )
 
 type CurrentFile struct {
 	Text       string
 	Version    int32
 	LanguageID string
+	Path       string
 }
 
-var currentFiles = map[string]CurrentFile{}
+// Print CurrentFile for debugging
+func (s CurrentFile) Println() {
+	slog.Info("\n" + s.Path + "\n-----\n" + s.Text + "\n-----\n")
+}
+
+var currentFiles = map[string]*CurrentFile{}
 
 func TextDocumentDidOpen(ctx *glsp.Context, params *protocol.DidOpenTextDocumentParams) error {
 	slog.Debug(fmt.Sprintf("Caching file: %s", params.TextDocument.URI))
-	currentFiles[params.TextDocument.URI] = CurrentFile{
+	currentFiles[params.TextDocument.URI] = &CurrentFile{
 		Text:       params.TextDocument.Text,
 		Version:    params.TextDocument.Version,
 		LanguageID: params.TextDocument.LanguageID,
+		Path:       params.TextDocument.URI,
 	}
 	return nil
 }
@@ -36,17 +42,7 @@ func TextDocumentDidClose(ctx *glsp.Context, params *protocol.DidCloseTextDocume
 func TextDocumentDidChange(ctx *glsp.Context, params *protocol.DidChangeTextDocumentParams) error {
 	slog.Debug(fmt.Sprintf("Updating file cache: %s", params.TextDocument.URI))
 	currentFile := currentFiles[params.TextDocument.URI]
-
-	fileLines := []string{}
-	{
-		scanner := bufio.NewScanner(strings.NewReader(currentFile.Text))
-		for scanner.Scan() {
-			fileLines = append(fileLines, scanner.Text())
-		}
-		if err := scanner.Err(); err != nil {
-			slog.Error(err.Error())
-		}
-	}
+	fileLines := regexp.MustCompile("\r?\n").Split(currentFile.Text, -1)
 
 	deleteLineIds := map[uint32]bool{}
 	concatLineIds := map[uint32]bool{}
@@ -60,13 +56,13 @@ func TextDocumentDidChange(ctx *glsp.Context, params *protocol.DidChangeTextDocu
 		case protocol.TextDocumentContentChangeEvent:
 			// Adding to text
 			if v.Range.Start == v.Range.End {
-				tmpLine := fileLines[v.Range.End.Line]
-				fileLines[v.Range.End.Line] = tmpLine[:v.Range.End.Character] + v.Text + tmpLine[v.Range.End.Character:]
+				tmp := fileLines[v.Range.End.Line]
+				fileLines[v.Range.End.Line] = tmp[:v.Range.End.Character] + v.Text + tmp[v.Range.End.Character:]
 
 				// Removing from same line
 			} else if v.Range.Start.Line == v.Range.End.Line {
-				tmpLine := fileLines[v.Range.End.Line]
-				fileLines[v.Range.End.Line] = tmpLine[:v.Range.Start.Character] + tmpLine[v.Range.End.Character:]
+				tmp := fileLines[v.Range.End.Line]
+				fileLines[v.Range.End.Line] = tmp[:v.Range.Start.Character] + tmp[v.Range.End.Character:]
 
 				// Removing from multiple lines
 			} else {
@@ -84,20 +80,18 @@ func TextDocumentDidChange(ctx *glsp.Context, params *protocol.DidChangeTextDocu
 	}
 
 	text := ""
-	for i := 0; i < len(fileLines); i++ {
+	for i, line := range fileLines {
 		if !deleteLineIds[uint32(i)] {
-			if concatLineIds[uint32(i)] {
-				text += fileLines[i]
+			// Explicitly concat or is last line
+			if concatLineIds[uint32(i)] || i == len(fileLines)-1 {
+				text += line
 			} else {
-				text += fileLines[i] + "\n"
+				text += line + "\n"
 			}
 		}
 	}
 
-	currentFiles[params.TextDocument.URI] = CurrentFile{
-		Text:       text,
-		Version:    params.TextDocument.Version,
-		LanguageID: currentFiles[params.TextDocument.URI].LanguageID,
-	}
+	currentFiles[params.TextDocument.URI].Text = text
+	currentFiles[params.TextDocument.URI].Version = params.TextDocument.Version
 	return nil
 }
