@@ -21,9 +21,6 @@ importers:
       '@biomejs/biome':
         specifier: ^2.3.11
         version: 2.3.12
-      '@menglinmaker/path-intellisense-lsp':
-        specifier: workspace:*
-        version: link:../../lsp
       '@types/node':
         specifier: ^25.0.9
         version: 25.0.10
@@ -43,11 +40,7 @@ importers:
         specifier: ^1.3.0
         version: 1.6.1
 
-  extensions/zed:
-    devDependencies:
-      '@menglinmaker/path-intellisense-lsp':
-        specifier: workspace:*
-        version: link:../../lsp
+  extensions/zed: {}
 
   lsp: {}
 
