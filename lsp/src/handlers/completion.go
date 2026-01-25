@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"fmt"
 	"log/slog"
 	"os"
@@ -11,44 +12,6 @@ import (
 	"path-intellisense-lsp/src/glsp"
 	protocol "path-intellisense-lsp/src/protocol_3_16"
 )
-
-func absolutePathSuggestions(absolutePath string) []string {
-	searchPath := filepath.Join(absolutePath, "*")
-	suggestedAbsolutePaths, err := filepath.Glob(searchPath)
-	if err != nil {
-		return []string{}
-	}
-	return suggestedAbsolutePaths
-}
-
-func relativePathSuggestions(path string, currentAbsoluteFilePath string) []string {
-	currentAbsoluteDirPath, _ := filepath.Split(currentAbsoluteFilePath)
-	absolutePath := filepath.Join(currentAbsoluteDirPath, path)
-	return absolutePathSuggestions(absolutePath)
-}
-
-func homePathSuggestions(path string) []string {
-	currentUser, err := user.Current()
-	if err != nil {
-		return []string{}
-	}
-	absolutePath := filepath.Join(currentUser.HomeDir, path[2:])
-	return absolutePathSuggestions(absolutePath)
-}
-
-// Get last match of valid file path
-func extractPathRegex(text string) (string, error) {
-	re := regexp.MustCompile("([.]{1,2}|~)?" + "(/([*]|[^\\/:?\"<>|\r\n])+)*" + "/")
-	matches := re.FindAllString(text, -1)
-	if len(matches) == 0 {
-		return "", nil
-	}
-	path := matches[len(matches)-1]
-	if len(path) == 0 {
-		return "", nil
-	}
-	return path, nil
-}
 
 func TextDocumentCompletion(ctx *glsp.Context, params *protocol.CompletionParams) (any, error) {
 	slog.Debug(fmt.Sprintf("TextDocumentCompletion: %s", params.TextDocument.URI))
@@ -78,16 +41,7 @@ func TextDocumentCompletion(ctx *glsp.Context, params *protocol.CompletionParams
 	// Format suggested paths
 	for _, suggestedAbsolutePath := range suggestedAbsolutePaths {
 		_, suggestion := filepath.Split(suggestedAbsolutePath)
-
-		doc := fmt.Sprintf(`
-**Input path:**
-
-[*%s*](file://%s)
-
-**Absolute path:**
-
-[*%s*](file://%s)`,
-			path+suggestion, suggestedAbsolutePath, suggestedAbsolutePath, suggestedAbsolutePath)
+		doc := documentPathMarkdown(path+suggestion, suggestedAbsolutePath)
 
 		fileInfo, err := os.Stat(suggestedAbsolutePath)
 		if err == nil && fileInfo.IsDir() {
@@ -119,4 +73,53 @@ func TextDocumentCompletion(ctx *glsp.Context, params *protocol.CompletionParams
 		}
 	}
 	return completionItems, nil
+}
+
+func documentPathMarkdown(inputPath, absolutePath string) string {
+	return fmt.Sprintf(`
+**Input path:**
+
+*%s*
+
+**Absolute path:**
+
+[*%s*](file://%s)`,
+		inputPath, absolutePath, absolutePath)
+}
+
+// Get last match of valid file path
+func extractPathRegex(text string) (string, error) {
+	triggerCharacter := "(\"|'|`| |\n)"   // """ or "'" or "`" or " " or "\n"
+	optionalPathPrefix := "([.]{1,2}|~)?" // "." or ".." or "~"
+	re := regexp.MustCompile(triggerCharacter + optionalPathPrefix + "(/([*]|[^\\/:?\"<>|\r\n])+)*" + "/")
+	matches := re.FindAllString("\n"+text, -1)
+	if len(matches) == 0 {
+		return "", errors.New("no path matching strings found")
+	}
+	path := matches[len(matches)-1][1:]
+	return path, nil
+}
+
+func absolutePathSuggestions(absolutePath string) []string {
+	searchPath := filepath.Join(absolutePath, "*")
+	suggestedAbsolutePaths, err := filepath.Glob(searchPath)
+	if err != nil {
+		return []string{}
+	}
+	return suggestedAbsolutePaths
+}
+
+func homePathSuggestions(path string) []string {
+	currentUser, err := user.Current()
+	if err != nil {
+		return []string{}
+	}
+	absolutePath := filepath.Join(currentUser.HomeDir, path[2:])
+	return absolutePathSuggestions(absolutePath)
+}
+
+func relativePathSuggestions(path string, currentAbsoluteFilePath string) []string {
+	currentAbsoluteDirPath, _ := filepath.Split(currentAbsoluteFilePath)
+	absolutePath := filepath.Join(currentAbsoluteDirPath, path)
+	return absolutePathSuggestions(absolutePath)
 }
