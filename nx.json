@@ -45,6 +45,18 @@
         }
       }
     },
+    "test:type": {
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src",
+        "{projectRoot}/test"
+      ],
+      "configurations": {
+        "watch": {
+          "watch": true
+        }
+      }
+    },
     "test:unit": {
       "cache": true,
       "inputs": [
