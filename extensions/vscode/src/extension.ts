@@ -3,10 +3,10 @@ import path from 'node:path'
 import { type ExtensionContext, window } from 'vscode'
 
 import {
-	LanguageClient,
-	TransportKind,
-	type LanguageClientOptions,
-	type ServerOptions,
+  LanguageClient,
+  TransportKind,
+  type LanguageClientOptions,
+  type ServerOptions,
 } from 'vscode-languageclient/node'
 
 let client: LanguageClient
@@ -15,43 +15,43 @@ const LSP_BINARY = 'path-intellisense-lsp'
 const LSP_NAME = 'Path intellisense lsp'
 
 export const activate = async (ctx: ExtensionContext) => {
-	// Default path for testing purposes
-	let lspBinaryPath = `./lsp/dist/${LSP_BINARY}`
-	if (!existsSync(lspBinaryPath))
-		lspBinaryPath = ctx.asAbsolutePath(path.join('dist', LSP_BINARY))
-	lspBinaryPath = `./lsp/dist/${LSP_BINARY}`
+  // Default path for testing purposes
+  let lspBinaryPath = `./extensions/vscode/out/${LSP_BINARY}`
+  if (!existsSync(lspBinaryPath))
+    lspBinaryPath = ctx.asAbsolutePath(path.join('out', LSP_BINARY))
+  lspBinaryPath = `./extensions/vscode/out/${LSP_BINARY}`
 
-	const serverOptions: ServerOptions = {
-		run: {
-			command: lspBinaryPath,
-			transport: TransportKind.stdio,
-			options: {
-				env: {
-					LOG_LEVEL: process.env['LOG_LEVEL'] ?? 'INFO',
-				},
-			},
-		},
-		debug: {
-			command: lspBinaryPath,
-			transport: TransportKind.stdio,
-			options: {
-				env: {
-					LOG_LEVEL: 'DEBUG',
-				},
-			},
-		},
-	}
-	const clientOptions: LanguageClientOptions = {
-		documentSelector: [{ scheme: 'file' }],
-		traceOutputChannel: window.createOutputChannel(`${LSP_NAME} trace`),
-	}
-	client = new LanguageClient(
-		LSP_BINARY,
-		LSP_NAME,
-		serverOptions,
-		clientOptions,
-	)
-	client.start()
+  const serverOptions: ServerOptions = {
+    run: {
+      command: lspBinaryPath,
+      transport: TransportKind.stdio,
+      options: {
+        env: {
+          LOG_LEVEL: process.env['LOG_LEVEL'] ?? 'INFO',
+        },
+      },
+    },
+    debug: {
+      command: lspBinaryPath,
+      transport: TransportKind.stdio,
+      options: {
+        env: {
+          LOG_LEVEL: 'DEBUG',
+        },
+      },
+    },
+  }
+  const clientOptions: LanguageClientOptions = {
+    documentSelector: [{ scheme: 'file' }],
+    traceOutputChannel: window.createOutputChannel(`${LSP_NAME} trace`),
+  }
+  client = new LanguageClient(
+    LSP_BINARY,
+    LSP_NAME,
+    serverOptions,
+    clientOptions,
+  )
+  client.start()
 }
 
 export const deactivate = () => (client ? client.stop() : undefined)
