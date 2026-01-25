@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"log/slog"
 	"os"
 	"path-intellisense-lsp/src/glsp"
@@ -31,11 +30,11 @@ func main() {
 	handler = protocol.Handler{
 		// Lifecycle
 		Initialize:  initialize,
-		Initialized: initialized,
-		SetTrace:    setTrace,
-		LogTrace:    logTrace,
-		Shutdown:    shutdown,
-		Exit:        exit,
+		Initialized: handlers.Initialized,
+		SetTrace:    handlers.SetTrace,
+		LogTrace:    handlers.LogTrace,
+		Shutdown:    handlers.Shutdown,
+		Exit:        handlers.Exit,
 		// Handlers for basic
 		CancelRequest: handlers.CancelRequest,
 		// Handlers for file syncing
@@ -74,43 +73,4 @@ func initialize(ctx *glsp.Context, params *protocol.InitializeParams) (any, erro
 		},
 	}
 	return initializeResult, nil
-}
-
-func initialized(ctx *glsp.Context, params *protocol.InitializedParams) error {
-	slog.Debug("Initialized server")
-	return nil
-}
-
-func setTrace(ctx *glsp.Context, params *protocol.SetTraceParams) error {
-	protocol.SetTraceValue(params.Value)
-	return nil
-}
-
-func logTrace(ctx *glsp.Context, params *protocol.LogTraceParams) error {
-	traceValue := protocol.GetTraceValue()
-
-	switch traceValue {
-	case protocol.TraceValueMessage:
-		slog.Info(params.Message)
-
-	case protocol.TraceValueVerbose:
-		jsonData, err := json.MarshalIndent(params, "", "  ")
-		if err != nil {
-			return err
-		}
-		slog.Debug(string(jsonData))
-	}
-
-	return nil
-}
-
-func shutdown(ctx *glsp.Context) error {
-	slog.Warn("Shutdown server")
-	protocol.SetTraceValue(protocol.TraceValueOff)
-	return nil
-}
-
-func exit(ctx *glsp.Context) error {
-	slog.Warn("Exit server")
-	return nil
 }
