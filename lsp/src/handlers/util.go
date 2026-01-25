@@ -23,3 +23,8 @@ func extractPathsRegex(text string) ([]string, error) {
 	}
 	return paths, nil
 }
+
+// Split text into lines
+func textLines(text string) []string {
+	return regexp.MustCompile("\r?\n").Split(text, -1)
+}

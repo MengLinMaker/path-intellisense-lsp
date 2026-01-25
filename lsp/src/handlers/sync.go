@@ -5,7 +5,6 @@ import (
 	"log/slog"
 	"path-intellisense-lsp/src/glsp"
 	protocol "path-intellisense-lsp/src/protocol_3_16"
-	"regexp"
 )
 
 type CurrentFile struct {
@@ -61,7 +60,7 @@ func TextDocumentDidClose(ctx *glsp.Context, params *protocol.DidCloseTextDocume
 func TextDocumentDidChange(ctx *glsp.Context, params *protocol.DidChangeTextDocumentParams) error {
 	slog.Debug(fmt.Sprintf("Updating file cache: %s", params.TextDocument.URI))
 	currentFile := currentFiles[params.TextDocument.URI]
-	fileLines := regexp.MustCompile("\r?\n").Split(currentFile.Text, -1)
+	lines := textLines(currentFile.Text)
 
 	deleteLineIds := map[uint32]bool{}
 	concatLineIds := map[uint32]bool{}
@@ -75,18 +74,18 @@ func TextDocumentDidChange(ctx *glsp.Context, params *protocol.DidChangeTextDocu
 		case protocol.TextDocumentContentChangeEvent:
 			// Adding to text
 			if v.Range.Start == v.Range.End {
-				tmp := fileLines[v.Range.End.Line]
-				fileLines[v.Range.End.Line] = tmp[:v.Range.End.Character] + v.Text + tmp[v.Range.End.Character:]
+				tmp := lines[v.Range.End.Line]
+				lines[v.Range.End.Line] = tmp[:v.Range.End.Character] + v.Text + tmp[v.Range.End.Character:]
 
 				// Removing from same line
 			} else if v.Range.Start.Line == v.Range.End.Line {
-				tmp := fileLines[v.Range.End.Line]
-				fileLines[v.Range.End.Line] = tmp[:v.Range.Start.Character] + tmp[v.Range.End.Character:]
+				tmp := lines[v.Range.End.Line]
+				lines[v.Range.End.Line] = tmp[:v.Range.Start.Character] + tmp[v.Range.End.Character:]
 
 				// Removing from multiple lines
 			} else {
-				fileLines[v.Range.Start.Line] = fileLines[v.Range.Start.Line][:v.Range.Start.Character]
-				fileLines[v.Range.End.Line] = fileLines[v.Range.End.Line][v.Range.End.Character:]
+				lines[v.Range.Start.Line] = lines[v.Range.Start.Line][:v.Range.Start.Character]
+				lines[v.Range.End.Line] = lines[v.Range.End.Line][v.Range.End.Character:]
 				concatLineIds[v.Range.Start.Line] = true
 				for i := v.Range.Start.Line + 1; i < v.Range.End.Line; i++ {
 					deleteLineIds[i] = true
@@ -99,10 +98,10 @@ func TextDocumentDidChange(ctx *glsp.Context, params *protocol.DidChangeTextDocu
 	}
 
 	text := ""
-	for i, line := range fileLines {
+	for i, line := range lines {
 		if !deleteLineIds[uint32(i)] {
 			// Explicitly concat or is last line
-			if concatLineIds[uint32(i)] || i == len(fileLines)-1 {
+			if concatLineIds[uint32(i)] || i == len(lines)-1 {
 				text += line
 			} else {
 				text += line + "\n"

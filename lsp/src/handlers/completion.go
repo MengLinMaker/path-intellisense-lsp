@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
-	"regexp"
 
 	"path-intellisense-lsp/src/glsp"
 	protocol "path-intellisense-lsp/src/protocol_3_16"
@@ -18,8 +17,7 @@ func TextDocumentCompletion(ctx *glsp.Context, params *protocol.CompletionParams
 
 	// Validate file path syntax
 	text := currentFiles[params.TextDocument.URI].Text
-	lines := regexp.MustCompile("\r?\n").Split(text, -1)
-	line := lines[params.Position.Line]
+	line := textLines(text)[params.Position.Line]
 	paths, err := extractPathsRegex(line[:params.Position.Character])
 	if err != nil {
 		return completionItems, nil
