@@ -16,10 +16,10 @@ const LSP_NAME = 'Path intellisense lsp'
 
 export const activate = async (ctx: ExtensionContext) => {
   // Default path for testing purposes
-  let lspBinaryPath = `./extensions/vscode/out/${LSP_BINARY}`
+  let lspBinaryPath = `./lsp/out/${LSP_BINARY}`
   if (!existsSync(lspBinaryPath))
     lspBinaryPath = ctx.asAbsolutePath(path.join('out', LSP_BINARY))
-  lspBinaryPath = `./extensions/vscode/out/${LSP_BINARY}`
+  lspBinaryPath = `./lsp/out/${LSP_BINARY}`
 
   const serverOptions: ServerOptions = {
     run: {
