@@ -43,8 +43,10 @@ func extractPathRegex(text string) (string, error) {
 	if len(matches) == 0 {
 		return "", nil
 	}
-
 	path := matches[len(matches)-1]
+	if len(path) == 0 {
+		return "", nil
+	}
 	return path, nil
 }
 
@@ -78,7 +80,7 @@ func TextDocumentCompletion(ctx *glsp.Context, params *protocol.CompletionParams
 		_, suggestion := filepath.Split(suggestedAbsolutePath)
 
 		doc := fmt.Sprintf(`
-**Relative path:**
+**Input path:**
 
 [*%s*](file://%s)
 
