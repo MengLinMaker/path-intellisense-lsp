@@ -91,7 +91,8 @@ func documentPathMarkdown(inputPath, absolutePath string) string {
 func extractPathRegex(text string) (string, error) {
 	triggerCharacter := "(\"|'|`| |\n)"   // """ or "'" or "`" or " " or "\n"
 	optionalPathPrefix := "([.]{1,2}|~)?" // "." or ".." or "~"
-	re := regexp.MustCompile(triggerCharacter + optionalPathPrefix + "(/([*]|[^\\/:?\"<>|\r\n])+)*" + "/")
+	illegalCharacters := "\\/:?\"<>|\r\n&"
+	re := regexp.MustCompile(triggerCharacter + optionalPathPrefix + "(/[^" + illegalCharacters + "]+)*/")
 	matches := re.FindAllString("\n"+text, -1)
 	if len(matches) == 0 {
 		return "", errors.New("no path matching strings found")
