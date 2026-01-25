@@ -1,45 +1,79 @@
 package handlers
 
 import (
-	"bufio"
-	"errors"
 	"fmt"
 	"log/slog"
 	"os"
+	"os/user"
 	"path/filepath"
 	"regexp"
-	"strings"
 
 	"path-intellisense-lsp/src/glsp"
 	protocol "path-intellisense-lsp/src/protocol_3_16"
 )
 
-func TextDocumentCompletion(ctx *glsp.Context, params *protocol.CompletionParams) (any, error) {
-	slog.Debug(fmt.Sprintf("TextDocumentCompletion: %s", params.TextDocument.URI))
-
-	var completionItems []protocol.CompletionItem
-
-	text := currentFiles[params.TextDocument.URI].Text
-	line, err := extractFileLine(text, params.Position.Line)
+func absolutePathSuggestions(absolutePath string) []string {
+	searchPath := filepath.Join(absolutePath, "*")
+	suggestedAbsolutePaths, err := filepath.Glob(searchPath)
 	if err != nil {
-		return completionItems, err
+		return []string{}
 	}
+	return suggestedAbsolutePaths
+}
 
-	// Proceed if input is relative file path
-	rePathSyntax := regexp.MustCompile(`[.]+(\/([*]|[^\\/:?"<>|\r\n])+)*\/`)
-	matches := rePathSyntax.FindAllString(line[:params.Position.Character], -1)
+func relativePathSuggestions(path string, currentAbsoluteFilePath string) []string {
+	currentAbsoluteDirPath, _ := filepath.Split(currentAbsoluteFilePath)
+	absolutePath := filepath.Join(currentAbsoluteDirPath, path)
+	return absolutePathSuggestions(absolutePath)
+}
+
+func homePathSuggestions(path string) []string {
+	currentUser, err := user.Current()
+	if err != nil {
+		return []string{}
+	}
+	absolutePath := filepath.Join(currentUser.HomeDir, path[2:])
+	return absolutePathSuggestions(absolutePath)
+}
+
+// Get last match of valid file path
+func extractPathRegex(text string) (string, error) {
+	re := regexp.MustCompile("([.]{1,2}|~)?" + "(/([*]|[^\\/:?\"<>|\r\n])+)*" + "/")
+	matches := re.FindAllString(text, -1)
 	if len(matches) == 0 {
-		return completionItems, nil
+		return "", nil
 	}
 
 	path := matches[len(matches)-1]
-	absoluteDir, _ := filepath.Split(params.TextDocument.URI[7:])
-	absolutePath := filepath.Join(absoluteDir, path, "*")
+	return path, nil
+}
 
-	suggestedAbsolutePaths, err := filepath.Glob(absolutePath)
+func TextDocumentCompletion(ctx *glsp.Context, params *protocol.CompletionParams) (any, error) {
+	slog.Debug(fmt.Sprintf("TextDocumentCompletion: %s", params.TextDocument.URI))
+	var completionItems []protocol.CompletionItem
+
+	// Validate file path syntax
+	text := currentFiles[params.TextDocument.URI].Text
+	lines := regexp.MustCompile("\r?\n").Split(text, -1)
+	line := lines[params.Position.Line]
+	path, err := extractPathRegex(line[:params.Position.Character])
 	if err != nil {
-		return completionItems, err
+		return completionItems, nil
 	}
+
+	// Suggest path
+	var suggestedAbsolutePaths = []string{}
+	switch string(path[0]) {
+	case "/":
+		suggestedAbsolutePaths = absolutePathSuggestions(path)
+	case "~":
+		suggestedAbsolutePaths = homePathSuggestions(path)
+	case ".":
+		absoluteCurrentFilePath := params.TextDocument.URI[7:]
+		suggestedAbsolutePaths = relativePathSuggestions(path, absoluteCurrentFilePath)
+	}
+
+	// Format suggested paths
 	for _, suggestedAbsolutePath := range suggestedAbsolutePaths {
 		_, suggestion := filepath.Split(suggestedAbsolutePath)
 
@@ -83,19 +117,4 @@ func TextDocumentCompletion(ctx *glsp.Context, params *protocol.CompletionParams
 		}
 	}
 	return completionItems, nil
-}
-
-func extractFileLine(text string, linePosition uint32) (string, error) {
-	scanner := bufio.NewScanner(strings.NewReader(text))
-	scanLine := uint32(0)
-	for scanner.Scan() {
-		line := scanner.Text()
-		if scanLine == linePosition {
-			return line, nil
-		}
-		scanLine += 1
-	}
-
-	slog.Error(fmt.Sprintf("Cannot find line %d in file", linePosition))
-	return "", errors.New("cannot find line in file")
 }
