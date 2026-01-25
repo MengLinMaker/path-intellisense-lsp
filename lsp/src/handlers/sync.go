@@ -23,13 +23,22 @@ func (s CurrentFile) Println() {
 var currentFiles = map[string]*CurrentFile{}
 
 func TextDocumentDidOpen(ctx *glsp.Context, params *protocol.DidOpenTextDocumentParams) error {
-	slog.Debug(fmt.Sprintf("Caching file: %s", params.TextDocument.URI))
+	slog.Debug(fmt.Sprintf("Caching openned file: %s", params.TextDocument.URI))
 	currentFiles[params.TextDocument.URI] = &CurrentFile{
 		Text:       params.TextDocument.Text,
 		Version:    params.TextDocument.Version,
 		LanguageID: params.TextDocument.LanguageID,
 		Path:       params.TextDocument.URI,
 	}
+	return nil
+}
+
+func TextDocumentDidSave(ctx *glsp.Context, params *protocol.DidSaveTextDocumentParams) error {
+	slog.Debug(fmt.Sprintf("Caching saved file: %s", params.TextDocument.URI))
+	if params.Text == nil {
+		return nil
+	}
+	currentFiles[params.TextDocument.URI].Text = *params.Text
 	return nil
 }
 

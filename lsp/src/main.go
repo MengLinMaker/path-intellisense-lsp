@@ -40,6 +40,7 @@ func main() {
 		CancelRequest: handlers.CancelRequest,
 		// Handlers for file syncing
 		TextDocumentDidOpen:   handlers.TextDocumentDidOpen,
+		TextDocumentDidSave:   handlers.TextDocumentDidSave,
 		TextDocumentDidClose:  handlers.TextDocumentDidClose,
 		TextDocumentDidChange: handlers.TextDocumentDidChange,
 		// Handlers for code completion
