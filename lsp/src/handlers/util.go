@@ -5,13 +5,16 @@ import (
 	"regexp"
 )
 
+const (
+	triggerCharacter   = "(\"|'|`| |\n)" // """ or "'" or "`" or " " or "\n"
+	optionalPathPrefix = "([.]{1,2}|~)?" // "." or ".." or "~"
+	illegalCharacters  = "\\/:?\"<>|\r\n&"
+)
+
 // Get last match of valid file path
 func extractPathsRegex(text string) ([]string, error) {
 	paths := []string{}
 
-	triggerCharacter := "(\"|'|`| |\n)"   // """ or "'" or "`" or " " or "\n"
-	optionalPathPrefix := "([.]{1,2}|~)?" // "." or ".." or "~"
-	illegalCharacters := "\\/:?\"<>|\r\n&"
 	re := regexp.MustCompile(triggerCharacter + optionalPathPrefix + "(/[^" + illegalCharacters + "]+)*/")
 	matches := re.FindAllString("\n"+text, -1)
 	if len(matches) == 0 {
