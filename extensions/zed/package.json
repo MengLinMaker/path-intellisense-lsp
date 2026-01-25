@@ -1,0 +1,10 @@
+{
+    "name": "@menglinmaker/zed",
+    "private": true,
+    "scripts": {
+        "boot": "cargo fetch",
+        "fmt": "cargo fmt",
+        "lint": "golangci-lint run ./src",
+        "build": "go build -o out/path-intellisense-lsp ./src/main.go"
+    }
+}

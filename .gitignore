@@ -1,9 +1,8 @@
-# Taskfile
-.task
+# Out
+out
 
 # Node
 node_modules
-dist
 
 # Rust
 *.wasm
@@ -13,3 +12,6 @@ target
 *.vsix
 path-intellisense-lsp
 .DS_STORE
+
+# Nx
+.nx

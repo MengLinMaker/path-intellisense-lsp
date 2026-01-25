@@ -1,0 +1,72 @@
+{
+  "$schema": "./node_modules/nx/schemas/project-schema.json",
+  "defaultBase": "main",
+  "tui": {
+    "enabled": false
+  },
+  "targetDefaults": {
+    "boot": {
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/go.mod",
+        "{projectRoot}/package.json",
+        "{projectRoot}/Cargo.toml",
+        "{projectRoot}/extension.toml"
+      ],
+      "configurations": {
+        "watch": {
+          "watch": true
+        }
+      }
+    },
+    "fmt": {
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src",
+        "{projectRoot}/test",
+        "{workspaceRoot}/biome.json"
+      ],
+      "configurations": {
+        "watch": {
+          "watch": true
+        }
+      }
+    },
+    "lint": {
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src",
+        "{projectRoot}/test",
+        "{workspaceRoot}/biome.json"
+      ],
+      "configurations": {
+        "watch": {
+          "watch": true
+        }
+      }
+    },
+    "test:unit": {
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src",
+        "{projectRoot}/test"
+      ],
+      "configurations": {
+        "watch": {
+          "watch": true
+        }
+      }
+    },
+    "build": {
+      "cache": true,
+      "outputs": [
+        "{projectRoot}/out"
+      ],
+      "configurations": {
+        "watch": {
+          "watch": true
+        }
+      }
+    }
+  }
+}
