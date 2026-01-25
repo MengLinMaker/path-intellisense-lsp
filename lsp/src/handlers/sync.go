@@ -30,6 +30,11 @@ func TextDocumentDidOpen(ctx *glsp.Context, params *protocol.DidOpenTextDocument
 		LanguageID: params.TextDocument.LanguageID,
 		Path:       params.TextDocument.URI,
 	}
+	textDocumentPublishDiagnostics(ctx, &textDocumentPublishDiagnosticsParams{
+		URI:     params.TextDocument.URI,
+		Version: params.TextDocument.Version,
+		Text:    params.TextDocument.Text,
+	})
 	return nil
 }
 
@@ -39,6 +44,11 @@ func TextDocumentDidSave(ctx *glsp.Context, params *protocol.DidSaveTextDocument
 		return nil
 	}
 	currentFiles[params.TextDocument.URI].Text = *params.Text
+	textDocumentPublishDiagnostics(ctx, &textDocumentPublishDiagnosticsParams{
+		URI:     params.TextDocument.URI,
+		Version: 0,
+		Text:    *params.Text,
+	})
 	return nil
 }
 
@@ -102,5 +112,10 @@ func TextDocumentDidChange(ctx *glsp.Context, params *protocol.DidChangeTextDocu
 
 	currentFiles[params.TextDocument.URI].Text = text
 	currentFiles[params.TextDocument.URI].Version = params.TextDocument.Version
+	textDocumentPublishDiagnostics(ctx, &textDocumentPublishDiagnosticsParams{
+		URI:     params.TextDocument.URI,
+		Version: params.TextDocument.Version,
+		Text:    text,
+	})
 	return nil
 }
