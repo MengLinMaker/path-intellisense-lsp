@@ -32,8 +32,7 @@ func TextDocumentCompletion(ctx *glsp.Context, params *protocol.CompletionParams
 	case "~":
 		suggestedAbsolutePaths = homePathSuggestions(path)
 	case ".":
-		absoluteCurrentFilePath := params.TextDocument.URI[7:]
-		suggestedAbsolutePaths = relativePathSuggestions(path, absoluteCurrentFilePath)
+		suggestedAbsolutePaths = relativePathSuggestions(path, params.TextDocument.URI)
 	}
 
 	// Format suggested paths
@@ -103,8 +102,8 @@ func homePathSuggestions(path string) []string {
 	return absolutePathSuggestions(absolutePath)
 }
 
-func relativePathSuggestions(path string, currentAbsoluteFilePath string) []string {
-	currentAbsoluteDirPath, _ := filepath.Split(currentAbsoluteFilePath)
+func relativePathSuggestions(path string, fileUri string) []string {
+	currentAbsoluteDirPath, _ := filepath.Split(fileUri[7:])
 	absolutePath := filepath.Join(currentAbsoluteDirPath, path)
 	return absolutePathSuggestions(absolutePath)
 }
