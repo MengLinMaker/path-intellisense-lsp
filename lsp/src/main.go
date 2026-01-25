@@ -36,6 +36,8 @@ func main() {
 		LogTrace:    logTrace,
 		Shutdown:    shutdown,
 		Exit:        exit,
+		// Handlers for basic
+		CancelRequest: handlers.CancelRequest,
 		// Handlers for file syncing
 		TextDocumentDidOpen:   handlers.TextDocumentDidOpen,
 		TextDocumentDidClose:  handlers.TextDocumentDidClose,
