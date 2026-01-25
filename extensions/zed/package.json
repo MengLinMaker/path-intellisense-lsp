@@ -4,7 +4,10 @@
     "scripts": {
         "boot": "cargo fetch",
         "fmt": "cargo fmt",
-        "lint": "golangci-lint run ./src",
-        "build": "go build -o out/path-intellisense-lsp ./src/main.go"
+        "lint": "cargo clippy --fix --allow-dirty",
+        "build": "cargo build --target wasm32-wasip2 && rm -rf ./out && mkdir -p ./out"
+    },
+    "devDependencies": {
+        "@menglinmaker/path-intellisense-lsp": "workspace:*"
     }
 }
