@@ -2,7 +2,7 @@
 This module compiles into a language server.
 
 ### Development
-Features should be implemented in `./src/handlers`.
+- Features should be implemented in `./src/handlers`.
 
-### Improvements
+### TODO
 - Add cli linting capability with config.

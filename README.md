@@ -8,6 +8,12 @@ Providing suggestions for relative, home and absolute paths.
 
 And LSP server allows easier integration into different IDEs.
 
+### Development
+- Language server is located in `./lsp`
+- IDE exrtension clients are located in `./extensions`
+  - VSCode - `./extensions/vscode`
+  - Zed - `./extensions/zed`
+
 ### Limitations
 **File paths cannot use spaces**
 This tradeoff is reasonable as spaces in filepaths will interfere with cli scripts.
