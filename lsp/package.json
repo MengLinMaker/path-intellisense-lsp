@@ -5,6 +5,6 @@
         "boot": "go mod tidy",
         "fmt": "go fmt ./src",
         "lint": "golangci-lint run ./src",
-        "build": "go build -o out/path-intellisense-lsp ./src/main.go"
+        "build": "go build -o ./out/path-intellisense-lsp ./src/main.go"
     }
 }
