@@ -3,6 +3,7 @@ package handlers
 import (
 	"errors"
 	"fmt"
+	"log/slog"
 	"os/user"
 	"path/filepath"
 	"regexp"
@@ -79,4 +80,32 @@ func relativePathSuggestions(path string, fileUri string, joinPath string) []str
 	currentAbsoluteDirPath, _ := filepath.Split(fileUri[7:])
 	absolutePath := filepath.Join(currentAbsoluteDirPath, path)
 	return absolutePathSuggestions(absolutePath, joinPath)
+}
+
+type pathMatch struct {
+	Text  string
+	Start int
+	End   int
+}
+
+func findPathMatches(line string) []pathMatch {
+	re := mustCompileLazyRegex(triggerCharacter + optionalPathPrefix + fmt.Sprintf("(/[^%s]+)+", illegalCharacters))
+	matches := re.FindAllStringIndex("\n"+line, -1)
+
+	results := make([]pathMatch, 0, len(matches))
+	for _, loc := range matches {
+		// By spec len(loc) == 2
+		start := loc[0]
+		end := loc[1] - 1
+		if start < 0 || end <= start || end > len(line) {
+			slog.Error(fmt.Sprintf("Failed to extract path from line:\n%s\nstart(%d), end(%d), len(%d)", line, start, end, len(line)))
+			continue
+		}
+		results = append(results, pathMatch{
+			Start: start,
+			End:   end,
+			Text:  line[start:end],
+		})
+	}
+	return results
 }

@@ -14,8 +14,9 @@ type textDocumentPublishDiagnosticsParams struct {
 }
 
 func textDocumentPublishDiagnostics(ctx *glsp.Context, params *textDocumentPublishDiagnosticsParams) {
-	diagnostics := []protocol.Diagnostic{}
+	slog.Debug(fmt.Sprintf("TextDocumentPublishDiagnostics for file: %s", params.URI))
 
+	diagnostics := []protocol.Diagnostic{}
 	for i, line := range textLines(params.Text) {
 		for _, match := range findPathMatches(line) {
 			if len(matchPath(match.Text, params.URI, "")) > 0 {
@@ -47,32 +48,4 @@ func textDocumentPublishDiagnostics(ctx *glsp.Context, params *textDocumentPubli
 		Version:     &version,
 		Diagnostics: diagnostics,
 	})
-}
-
-type pathMatch struct {
-	Text  string
-	Start int
-	End   int
-}
-
-func findPathMatches(line string) []pathMatch {
-	re := mustCompileLazyRegex(triggerCharacter + optionalPathPrefix + fmt.Sprintf("(/[^%s]+)+", illegalCharacters))
-	matches := re.FindAllStringIndex("\n"+line, -1)
-
-	results := make([]pathMatch, 0, len(matches))
-	for _, loc := range matches {
-		// By spec len(loc) == 2
-		start := loc[0]
-		end := loc[1] - 1
-		if start < 0 || end <= start || end > len(line) {
-			slog.Error(fmt.Sprintf("Failed to extract path from line:\n%s\nstart(%d), end(%d), len(%d)", line, start, end, len(line)))
-			continue
-		}
-		results = append(results, pathMatch{
-			Start: start,
-			End:   end,
-			Text:  line[start:end],
-		})
-	}
-	return results
 }
