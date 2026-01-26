@@ -13,11 +13,22 @@ const (
 	illegalCharacters  = "\\/:?\"<>|\r\n&"
 )
 
+var regexCache = map[string]*regexp.Regexp{}
+
+func mustCompileLazyRegex(filter string) *regexp.Regexp {
+	if regexCache[filter] != nil {
+		return regexCache[filter]
+	}
+	re := regexp.MustCompile(filter)
+	regexCache[filter] = re
+	return re
+}
+
 // Get last match of valid file path
 func extractPathsRegex(text string) ([]string, error) {
 	paths := []string{}
 
-	re := regexp.MustCompile(triggerCharacter + optionalPathPrefix + "(/[^" + illegalCharacters + "]+)*/")
+	re := mustCompileLazyRegex(triggerCharacter + optionalPathPrefix + "(/[^" + illegalCharacters + "]+)*/")
 	matches := re.FindAllString("\n"+text, -1)
 	if len(matches) == 0 {
 		return paths, errors.New("no path matching strings found")
@@ -31,7 +42,7 @@ func extractPathsRegex(text string) ([]string, error) {
 
 // Split text into lines
 func textLines(text string) []string {
-	return regexp.MustCompile("\r?\n").Split(text, -1)
+	return mustCompileLazyRegex("\r?\n").Split(text, -1)
 }
 
 func matchPath(path string, fileUri string, joinPath string) []string {
