@@ -1,0 +1,14 @@
+{
+    "private": true,
+    "scripts": {
+        "nx": "nx",
+        "boot": "nx affected -t boot",
+        "fmt": "nx affected -t format",
+        "lint": "nx affected -t lint",
+        "build": "nx affected -t build",
+        "watch:all": "nx watch --all -- nx affected --base=HEAD -t boot fmt lint test:type build"
+    },
+    "devDependencies": {
+        "nx": "22.4.1"
+    }
+}

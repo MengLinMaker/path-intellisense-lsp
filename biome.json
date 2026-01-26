@@ -3,7 +3,16 @@
     "javascript": {
         "formatter": {
             "semicolons": "asNeeded",
-            "quoteStyle": "single"
+            "quoteStyle": "single",
+            "indentStyle": "space"
+        }
+    },
+    "linter": {
+        "rules": {
+            "recommended": true,
+            "complexity": {
+                "useLiteralKeys": "off"
+            }
         }
     },
     "files": {
