@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"errors"
+	"fmt"
 	"os/user"
 	"path/filepath"
 	"regexp"
@@ -15,6 +16,7 @@ const (
 
 var regexCache = map[string]*regexp.Regexp{}
 
+// Lazy compile regex and cache for reuse
 func mustCompileLazyRegex(filter string) *regexp.Regexp {
 	if regexCache[filter] != nil {
 		return regexCache[filter]
@@ -26,14 +28,12 @@ func mustCompileLazyRegex(filter string) *regexp.Regexp {
 
 // Get last match of valid file path
 func extractPathsRegex(text string) ([]string, error) {
-	paths := []string{}
-
-	re := mustCompileLazyRegex(triggerCharacter + optionalPathPrefix + "(/[^" + illegalCharacters + "]+)*/")
+	re := mustCompileLazyRegex(triggerCharacter + optionalPathPrefix + fmt.Sprintf("(/[^%s]+)*", illegalCharacters) + "/")
 	matches := re.FindAllString("\n"+text, -1)
 	if len(matches) == 0 {
-		return paths, errors.New("no path matching strings found")
+		return []string{}, errors.New("no path matching strings found")
 	}
-
+	paths := []string{}
 	for _, match := range matches {
 		paths = append(paths, match[1:])
 	}
