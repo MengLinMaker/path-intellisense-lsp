@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"errors"
+	"os/user"
+	"path/filepath"
 	"regexp"
 )
 
@@ -30,4 +32,40 @@ func extractPathsRegex(text string) ([]string, error) {
 // Split text into lines
 func textLines(text string) []string {
 	return regexp.MustCompile("\r?\n").Split(text, -1)
+}
+
+func matchPath(path string, fileUri string, joinPath string) []string {
+	switch string(path[0]) {
+	case "/":
+		return absolutePathSuggestions(path, joinPath)
+	case "~":
+		return homePathSuggestions(path, joinPath)
+	case ".":
+		return relativePathSuggestions(path, fileUri, joinPath)
+	}
+	return []string{}
+}
+
+func absolutePathSuggestions(absolutePath string, joinPath string) []string {
+	searchPath := filepath.Join(absolutePath, joinPath)
+	suggestedAbsolutePaths, err := filepath.Glob(searchPath)
+	if err != nil {
+		return []string{}
+	}
+	return suggestedAbsolutePaths
+}
+
+func homePathSuggestions(path string, joinPath string) []string {
+	currentUser, err := user.Current()
+	if err != nil {
+		return []string{}
+	}
+	absolutePath := filepath.Join(currentUser.HomeDir, path[2:])
+	return absolutePathSuggestions(absolutePath, joinPath)
+}
+
+func relativePathSuggestions(path string, fileUri string, joinPath string) []string {
+	currentAbsoluteDirPath, _ := filepath.Split(fileUri[7:])
+	absolutePath := filepath.Join(currentAbsoluteDirPath, path)
+	return absolutePathSuggestions(absolutePath, joinPath)
 }

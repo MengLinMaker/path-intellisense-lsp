@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
-	"os/user"
 	"path/filepath"
 
 	"path-intellisense-lsp/src/glsp"
@@ -24,16 +23,7 @@ func TextDocumentCompletion(ctx *glsp.Context, params *protocol.CompletionParams
 	}
 	path := paths[len(paths)-1]
 
-	// Suggest path
-	var suggestedAbsolutePaths = []string{}
-	switch string(path[0]) {
-	case "/":
-		suggestedAbsolutePaths = absolutePathSuggestions(path)
-	case "~":
-		suggestedAbsolutePaths = homePathSuggestions(path)
-	case ".":
-		suggestedAbsolutePaths = relativePathSuggestions(path, params.TextDocument.URI)
-	}
+	suggestedAbsolutePaths := matchPath(path, params.TextDocument.URI, "*")
 
 	// Format suggested paths
 	for _, suggestedAbsolutePath := range suggestedAbsolutePaths {
@@ -82,28 +72,4 @@ func documentPathMarkdown(inputPath, absolutePath string) string {
 
 [*%s*](file://%s)`,
 		inputPath, absolutePath, absolutePath)
-}
-
-func absolutePathSuggestions(absolutePath string) []string {
-	searchPath := filepath.Join(absolutePath, "*")
-	suggestedAbsolutePaths, err := filepath.Glob(searchPath)
-	if err != nil {
-		return []string{}
-	}
-	return suggestedAbsolutePaths
-}
-
-func homePathSuggestions(path string) []string {
-	currentUser, err := user.Current()
-	if err != nil {
-		return []string{}
-	}
-	absolutePath := filepath.Join(currentUser.HomeDir, path[2:])
-	return absolutePathSuggestions(absolutePath)
-}
-
-func relativePathSuggestions(path string, fileUri string) []string {
-	currentAbsoluteDirPath, _ := filepath.Split(fileUri[7:])
-	absolutePath := filepath.Join(currentAbsoluteDirPath, path)
-	return absolutePathSuggestions(absolutePath)
 }
