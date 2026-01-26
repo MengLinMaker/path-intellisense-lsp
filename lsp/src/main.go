@@ -44,6 +44,8 @@ func main() {
 		TextDocumentDidChange: handlers.TextDocumentDidChange,
 		// Handlers for code completion
 		TextDocumentCompletion: handlers.TextDocumentCompletion,
+		// Handlers for navigation
+		TextDocumentDocumentLink: handlers.TextDocumentDocumentLink,
 	}
 
 	server := server.NewServer(&handler)
