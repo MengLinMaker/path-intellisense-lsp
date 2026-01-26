@@ -11,7 +11,7 @@ import (
 const (
 	triggerCharacter   = "(\"|'|`| |\n)" // """ or "'" or "`" or " " or "\n"
 	optionalPathPrefix = "([.]{1,2}|~)?" // "." or ".." or "~"
-	illegalCharacters  = "\\/:?\"<>|\r\n&"
+	illegalCharacters  = "\\/:?\"<>|\r\n &"
 )
 
 var regexCache = map[string]*regexp.Regexp{}
@@ -71,7 +71,7 @@ func homePathSuggestions(path string, joinPath string) []string {
 	if err != nil {
 		return []string{}
 	}
-	absolutePath := filepath.Join(currentUser.HomeDir, path[2:])
+	absolutePath := filepath.Join(currentUser.HomeDir, path[1:])
 	return absolutePathSuggestions(absolutePath, joinPath)
 }
 
