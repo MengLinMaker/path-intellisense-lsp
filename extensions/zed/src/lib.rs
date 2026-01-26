@@ -21,7 +21,7 @@ impl zed::Extension for PathIntellisenseLspExtension {
         //     .ok_or_else(|| format!("Could not find {} binary", Self::LSP_BINARY_NAME))?;
 
         Ok(zed::Command {
-            command: "/Users/menglinmaker/Documents/software-projects/open-source/path-intellisense-lsp/lsp/dist/path-intellisense-lsp".to_string(),
+            command: "/Users/menglinmaker/Documents/software-projects/open-source/path-intellisense-lsp/lsp/out/path-intellisense-lsp".to_string(),
             // command: path,
             args: vec![],
             env: worktree.shell_env(),
