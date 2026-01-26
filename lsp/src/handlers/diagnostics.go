@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"log/slog"
 	"path-intellisense-lsp/src/glsp"
 	protocol "path-intellisense-lsp/src/protocol_3_16"
 )
@@ -55,32 +56,22 @@ type pathMatch struct {
 }
 
 func findPathMatches(line string) []pathMatch {
-	search := "\n" + line
-	re := mustCompileLazyRegex(triggerCharacter + optionalPathPrefix + fmt.Sprintf("(/[^%s]+)*", illegalCharacters))
-
-	matches := re.FindAllStringIndex(search, -1)
-	if len(matches) == 0 {
-		return nil
-	}
+	re := mustCompileLazyRegex(triggerCharacter + optionalPathPrefix + fmt.Sprintf("(/[^%s]+)+", illegalCharacters))
+	matches := re.FindAllStringIndex("\n"+line, -1)
 
 	results := make([]pathMatch, 0, len(matches))
-	for _, match := range matches {
-		if len(match) < 2 {
-			continue
-		}
-		start := match[0]
-		end := match[1] - 1
+	for _, loc := range matches {
+		// By spec len(loc) == 2
+		start := loc[0]
+		end := loc[1] - 1
 		if start < 0 || end <= start || end > len(line) {
-			continue
-		}
-		pathText := search[start:match[1]][1:]
-		if pathText == "" {
+			slog.Error(fmt.Sprintf("Failed to extract path from line:\n%s\nstart(%d), end(%d), len(%d)", line, start, end, len(line)))
 			continue
 		}
 		results = append(results, pathMatch{
 			Start: start,
 			End:   end,
-			Text:  pathText,
+			Text:  line[start:end],
 		})
 	}
 	return results
