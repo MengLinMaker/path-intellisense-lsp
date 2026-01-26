@@ -10,9 +10,9 @@ import (
 )
 
 const (
-	triggerCharacter   = "(\"|'|`| |\n)" // """ or "'" or "`" or " " or "\n"
-	optionalPathPrefix = "([.]{1,2}|~)?" // "." or ".." or "~"
-	illegalCharacters  = "\\/:?\"<>|\r\n &"
+	triggerCharacter   = "(\"|'|`| |\n)"          // """ or "'" or "`" or " " or "\n"
+	optionalPathPrefix = "([.]{1,2}|~)?"          // "." or ".." or "~"
+	illegalCharacters  = "\\/:?<>|\r" + "\"'` \n" // Must include trigger characters
 )
 
 var regexCache = map[string]*regexp.Regexp{}
